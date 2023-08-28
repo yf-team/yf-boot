@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: yf-boot-api
+  profiles:
+      active: dev
+  main:
+    allow-bean-definition-overriding: true
+server:
+  port: 8080
+  # 启用服务端压缩
+  compression:
+    enabled: true
+    min-response-size: 10
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+

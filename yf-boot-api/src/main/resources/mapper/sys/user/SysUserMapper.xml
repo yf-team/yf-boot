@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pw.system.modules.user.mapper.SysUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pw.system.modules.user.entity.SysUser">
+        <id column="id" property="id" />
+        <result column="user_name" property="userName" />
+        <result column="avatar" property="avatar" />
+        <result column="face" property="face" />
+        <result column="real_name" property="realName" />
+        <result column="password" property="password" />
+        <result column="salt" property="salt" />
+        <result column="state" property="state" />
+        <result column="points" property="points" />
+        <result column="id_card" property="idCard" />
+        <result column="mobile" property="mobile" />
+        <result column="email" property="email" />
+        <result column="dept_code" property="deptCode" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_by" property="createBy" />
+        <result column="update_by" property="updateBy" />
+        <result column="data_flag" property="dataFlag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        `id`,`user_name`,`avatar`,`face`,`real_name`,`password`,`salt`,`state`,`points`,`id_card`,`mobile`,`email`,`dept_code`,`create_time`,`update_time`,`create_by`,`update_by`,`data_flag`
+    </sql>
+
+    <resultMap id="ListResultMap"
+               type="com.pw.system.modules.user.dto.response.UserListRespDTO">
+
+        <id column="id" property="id" />
+        <result column="user_name" property="userName" />
+        <result column="avatar" property="avatar" />
+        <result column="real_name" property="realName" />
+        <result column="state" property="state" />
+        <result column="points" property="points" />
+        <result column="id_card" property="idCard" />
+        <result column="mobile" property="mobile" />
+        <result column="email" property="email" />
+        <result column="dept_code" property="deptCode" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="roleNames" property="roleNames" />
+    </resultMap>
+
+    <resultMap id="ExportResultMap" type="com.pw.system.modules.user.dto.response.UserExportDTO">
+        <result column="user_name" property="userName" />
+        <result column="role_ids" property="roleIds" />
+        <result column="real_name" property="realName" />
+        <result column="email" property="email" />
+        <result column="mobile" property="mobile" />
+        <result column="id_card" property="idCard" />
+        <result column="points" property="points" />
+        <result column="dept_code" property="deptCode" />
+    </resultMap>
+
+    <select id="listForExport" resultMap="ExportResultMap">
+        SELECT user_name,real_name,mobile,email,id_card,points,dept_code,
+        (SELECT GROUP_CONCAT(role_id SEPARATOR ',') FROM sys_user_role WHERE user_id=uc.id) AS role_ids
+        FROM sys_user uc
+        LEFT JOIN sys_user_role ur ON ur.user_id=uc.id
+        <include refid="pagingQuery"></include>
+        GROUP BY uc.id
+    </select>
+
+
+    <select id="paging" resultMap="ListResultMap">
+        SELECT uc.*,
+        (SELECT GROUP_CONCAT(b.role_name) FROM sys_user_role a LEFT JOIN sys_role b ON a.role_id=b.id WHERE a.user_id=uc.id) as roleNames
+        FROM sys_user uc
+        LEFT JOIN sys_user_role ur ON ur.user_id=uc.id
+        <include refid="pagingQuery"></include>
+        GROUP BY uc.id
+        <if test="page.orders!=null and page.orders.size() > 0">
+            ORDER BY
+            <foreach collection="page.orders" separator="," item="od">
+                uc.${od.column} ${od.asc?'ASC':'DESC'}
+            </foreach>
+        </if>
+    </select>
+
+
+    <sql id="pagingQuery">
+        <where>
+            <if test="query!=null">
+                <if test="query.deptCode!=null and query.deptCode!=''">
+                    AND uc.dept_code LIKE CONCAT(#{query.deptCode},'%')
+                </if>
+                <if test="query.userName!=null and query.userName!=''">
+                    AND (uc.user_name LIKE CONCAT('%',#{query.userName},'%') OR uc.real_name LIKE CONCAT('%',#{query.userName},'%'))
+                </if>
+                <if test="query.roleIds!=null and query.roleIds.size >0 ">
+                    AND ur.role_id IN
+                    <foreach collection="query.roleIds" open="(" close=")" separator="," item="roleId">#{roleId}</foreach>
+                </if>
+                <if test="query.excludes!=null and query.excludes.size >0 ">
+                    AND uc.id NOT IN
+                    <foreach collection="query.excludes" open="(" close=")" separator="," item="id">#{id}</foreach>
+                </if>
+                <if test="query.state!=null">
+                    AND uc.state=#{query.state}
+                </if>
+                <if test="query.mobile!=null and query.mobile!=''">
+                    AND uc.mobile LIKE CONCAT('%',#{query.mobile},'%')
+                </if>
+            </if>
+        </where>
+    </sql>
+
+</mapper>

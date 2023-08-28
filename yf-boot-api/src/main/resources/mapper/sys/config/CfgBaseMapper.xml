@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pw.system.modules.config.mapper.CfgBaseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pw.system.modules.config.entity.CfgBase">
+        <id column="id" property="id" />
+        <result column="site_name" property="siteName" />
+        <result column="login_logo" property="loginLogo" />
+        <result column="login_bg" property="loginBg" />
+        <result column="back_logo" property="backLogo" />
+        <result column="copy_right" property="copyRight" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        `id`,`site_name`,`login_logo`,`login_bg`,`back_logo`,`copy_right`
+    </sql>
+
+</mapper>

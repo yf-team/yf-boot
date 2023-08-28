@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pw.system.modules.depart.mapper.SysDepartMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pw.system.modules.depart.entity.SysDepart">
+        <id column="id" property="id" />
+        <result column="dept_type" property="deptType" />
+        <result column="parent_id" property="parentId" />
+        <result column="dept_name" property="deptName" />
+        <result column="dept_code" property="deptCode" />
+        <result column="dept_level" property="deptLevel" />
+        <result column="sort" property="sort" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_by" property="createBy" />
+        <result column="update_by" property="updateBy" />
+        <result column="data_flag" property="dataFlag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        `id`,`dept_type`,`parent_id`,`dept_name`,`dept_code`,`dept_level`,`sort`,`create_time`,`update_time`,`create_by`,`update_by`,`data_flag`
+    </sql>
+
+
+    <resultMap id="TreeResultMap"
+               type="com.pw.system.modules.depart.dto.response.SysDepartTreeDTO"
+               extends="BaseResultMap">
+        <collection property="children" column="{id=id,deptCodes=deptCodes,likeCode=likeCode}" select="findChildren" ></collection>
+    </resultMap>
+
+
+    <select id="findChildren" resultMap="TreeResultMap">
+        SELECT dp.*,"${deptCodes}" AS deptCodes,"${likeCode}" AS likeCode FROM sys_depart dp WHERE parent_id=#{id}
+        <if test="deptCodes!=null and deptCodes!=''">
+            AND (
+             dept_code IN (${deptCodes})
+             <if test="likeCode!=null and likeCode!=''">
+                 OR dept_code LIKE CONCAT(#{likeCode}, '%')
+             </if>
+            )
+        </if>
+
+        ORDER BY `sort` ASC
+    </select>
+
+    <select id="tree" resultMap="TreeResultMap">
+        SELECT dp.*,"${query.deptCodes}" AS deptCodes,"${query.likeCode}" AS likeCode FROM sys_depart dp
+        WHERE dp.parent_id='0'
+
+        <if test="query!=null">
+
+            <if test="query.deptCodes!=null">
+                AND (
+                 dp.dept_code IN (${query.deptCodes})
+                 <if test="query.likeCode!=null and query.likeCode!=''">
+                     OR dp.dept_code LIKE CONCAT(#{query.likeCode}, '%')
+                 </if>
+                )
+            </if>
+
+            <if test="query.deptCode!=null and query.deptCode!=''">
+                AND dp.dept_code=#{query.deptCode}
+            </if>
+            <if test="query.deptName!=null and query.deptName!=''">
+                AND dp.dept_name LIKE '%${query.deptName}%'
+            </if>
+        </if>
+
+        ORDER BY `sort` ASC
+    </select>
+
+</mapper>

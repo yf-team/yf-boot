@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pw.system.modules.user.mapper.SysUserRoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pw.system.modules.user.entity.SysUserRole">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="role_id" property="roleId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        `id`
+        ,`user_id`,`role_id`
+    </sql>
+
+    <select id="listByUser" resultMap="com.pw.system.modules.role.mapper.SysRoleMapper.BaseResultMap">
+        SELECT *
+        FROM sys_role
+        WHERE id IN (SELECT role_id FROM sys_user_role WHERE user_id = #{userId})
+    </select>
+
+    <select id="findUserPermission" resultType="String">
+        SELECT DISTINCT mu.permission_tag
+        FROM sys_user_role ur
+                 LEFT JOIN sys_role_menu rm ON ur.role_id = rm.role_id
+                 LEFT JOIN sys_menu mu ON rm.menu_id = mu.id
+        WHERE mu.id IS NOT NULL
+          AND mu.permission_tag IS NOT NULL
+          AND mu.permission_tag!=''
+        AND ur.user_id=#{userId}
+    </select>
+
+    <select id="findMaxRole" resultMap="BaseResultMap">
+        SELECT ur.* FROM sys_user_role ur
+        LEFT JOIN sys_role role ON ur.role_id=role.id
+        WHERE ur.user_id=#{userId}
+        ORDER BY role.data_scope DESC
+        LIMIT 1
+    </select>
+
+    <select id="countWithLevel" resultType="int">
+        SELECT COUNT(DISTINCT ur.user_id)
+        FROM sys_user_role ur
+        LEFT JOIN sys_role role ON ur.role_id=role.id WHERE role.role_level &lt; #{roleLevel}
+        AND ur.user_id IN <foreach item="item" collection="userIds" separator="," open="(" close=")" index="">'${item}'</foreach>
+    </select>
+
+    <select id="findMaxLevel" resultType="int">
+        SELECT IFNULL(MAX(role_level),0) FROM sys_user_role rl LEFT JOIN sys_role role ON rl.role_id=role.id
+        WHERE rl.user_id=#{userId};
+    </select>
+
+</mapper>

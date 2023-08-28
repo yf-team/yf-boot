@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "strict": true,
+    "strictNullChecks": false, // 忽略null赋值
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "baseUrl": ".",
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "strictFunctionTypes": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": [
+      "@intlify/vite-plugin-vue-i18n/client",
+      "vite/client",
+      "element-plus/global",
+      "@types/intro.js",
+      "@types/qrcode",
+      "vite-plugin-svg-icons/client",
+      "unplugin-vue-define-options"
+    ],
+    "typeRoots": ["./node_modules/@types/", "./types"]
+  },
+  "include": ["src/**/*", "types/**/*.d.ts", "mock/**/*.ts"],
+  "exclude": ["dist", "node_modules"]
+}

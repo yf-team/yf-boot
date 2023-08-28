@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pw.system.modules.dict.mapper.SysDicValueMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pw.system.modules.dict.entity.SysDicValue">
+        <id column="id" property="id" />
+        <result column="dic_code" property="dicCode" />
+        <result column="value" property="value" />
+        <result column="title" property="title" />
+        <result column="parent_id" property="parentId" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        `id`,`dic_code`,`value`,`title`,`parent_id`,`remark`
+    </sql>
+
+    <select id="findDictText" resultType="String">
+        SELECT `title` FROM sys_dic_value WHERE `dic_code`=#{dicCode} AND `value`=#{value}  LIMIT 1
+    </select>
+
+    <select id="findTableText" resultType="String">
+        SELECT `${dicText}` FROM ${dicTable} WHERE `${dicCode}`=#{value} LIMIT 1
+    </select>
+
+</mapper>
