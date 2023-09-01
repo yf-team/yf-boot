@@ -8,3 +8,10 @@ export const detailApi = (data?: any) => {
     data
   })
 }
+
+export const saveApi = (data?: any) => {
+  return request.post({
+    url: '/api/sys/config/save',
+    data
+  })
+}
