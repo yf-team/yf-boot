@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pw.system.modules.config.mapper.CfgUploadMapper">
+<mapper namespace="com.yf.system.modules.config.mapper.CfgUploadMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.pw.system.modules.config.dto.CfgUploadDTO">
+    <resultMap id="BaseResultMap" type="com.yf.system.modules.config.dto.CfgUploadDTO">
         <id column="id" property="id" />
         <result column="provider" property="provider" />
         <result column="enabled" property="enabled" />

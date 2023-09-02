@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pw.system.modules.user.mapper.SysUserRoleMapper">
+<mapper namespace="com.yf.system.modules.user.mapper.SysUserRoleMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.pw.system.modules.user.entity.SysUserRole">
+    <resultMap id="BaseResultMap" type="com.yf.system.modules.user.entity.SysUserRole">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
         <result column="role_id" property="roleId"/>
@@ -15,7 +15,7 @@
         ,`user_id`,`role_id`
     </sql>
 
-    <select id="listByUser" resultMap="com.pw.system.modules.role.mapper.SysRoleMapper.BaseResultMap">
+    <select id="listByUser" resultMap="com.yf.system.modules.role.mapper.SysRoleMapper.BaseResultMap">
         SELECT *
         FROM sys_role
         WHERE id IN (SELECT role_id FROM sys_user_role WHERE user_id = #{userId})

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pw.system.modules.menu.mapper.SysMenuMapper">
+<mapper namespace="com.yf.system.modules.menu.mapper.SysMenuMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.pw.system.modules.menu.entity.SysMenu">
+    <resultMap id="BaseResultMap" type="com.yf.system.modules.menu.entity.SysMenu">
         <id column="id" property="id" />
         <result column="parent_id" property="parentId" />
         <result column="menu_type" property="menuType" />
@@ -31,7 +31,7 @@
     </sql>
 
 
-    <resultMap id="MenuTreeMap" type="com.pw.system.modules.menu.dto.response.MenuTreeRespDTO">
+    <resultMap id="MenuTreeMap" type="com.yf.system.modules.menu.dto.response.MenuTreeRespDTO">
         <id column="id" property="id" />
         <result column="parent_id" property="parentId" />
         <result column="menu_type" property="menuType" />
@@ -62,7 +62,7 @@
 
     <!-- 递归获得角色路由 -->
     <resultMap id="RouteResultMap"
-               type="com.pw.system.modules.menu.dto.response.RouteRespDTO">
+               type="com.yf.system.modules.menu.dto.response.RouteRespDTO">
 
         <id column="id" property="id" />
         <result column="parent_id" property="parentId" />

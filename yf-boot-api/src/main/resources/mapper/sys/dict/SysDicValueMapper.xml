@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pw.system.modules.dict.mapper.SysDicValueMapper">
+<mapper namespace="com.yf.system.modules.dict.mapper.SysDicValueMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.pw.system.modules.dict.entity.SysDicValue">
+    <resultMap id="BaseResultMap" type="com.yf.system.modules.dict.entity.SysDicValue">
         <id column="id" property="id" />
         <result column="dic_code" property="dicCode" />
         <result column="value" property="value" />

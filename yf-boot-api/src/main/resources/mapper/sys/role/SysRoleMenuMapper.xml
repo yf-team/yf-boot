@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pw.system.modules.role.mapper.SysRoleMenuMapper">
+<mapper namespace="com.yf.system.modules.role.mapper.SysRoleMenuMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.pw.system.modules.role.entity.SysRoleMenu">
+    <resultMap id="BaseResultMap" type="com.yf.system.modules.role.entity.SysRoleMenu">
         <id column="id" property="id" />
         <result column="role_id" property="roleId" />
         <result column="menu_id" property="menuId" />

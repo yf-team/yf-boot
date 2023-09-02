@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pw.system.modules.depart.mapper.SysDepartMapper">
+<mapper namespace="com.yf.system.modules.depart.mapper.SysDepartMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.pw.system.modules.depart.entity.SysDepart">
+    <resultMap id="BaseResultMap" type="com.yf.system.modules.depart.entity.SysDepart">
         <id column="id" property="id" />
         <result column="dept_type" property="deptType" />
         <result column="parent_id" property="parentId" />
@@ -25,7 +25,7 @@
 
 
     <resultMap id="TreeResultMap"
-               type="com.pw.system.modules.depart.dto.response.SysDepartTreeDTO"
+               type="com.yf.system.modules.depart.dto.response.SysDepartTreeDTO"
                extends="BaseResultMap">
         <collection property="children" column="{id=id,deptCodes=deptCodes,likeCode=likeCode}" select="findChildren" ></collection>
     </resultMap>

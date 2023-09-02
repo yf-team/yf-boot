@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pw.system.modules.user.mapper.SysUserMapper">
+<mapper namespace="com.yf.system.modules.user.mapper.SysUserMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.pw.system.modules.user.entity.SysUser">
+    <resultMap id="BaseResultMap" type="com.yf.system.modules.user.entity.SysUser">
         <id column="id" property="id" />
         <result column="user_name" property="userName" />
         <result column="avatar" property="avatar" />
@@ -30,7 +30,7 @@
     </sql>
 
     <resultMap id="ListResultMap"
-               type="com.pw.system.modules.user.dto.response.UserListRespDTO">
+               type="com.yf.system.modules.user.dto.response.UserListRespDTO">
 
         <id column="id" property="id" />
         <result column="user_name" property="userName" />
@@ -47,7 +47,7 @@
         <result column="roleNames" property="roleNames" />
     </resultMap>
 
-    <resultMap id="ExportResultMap" type="com.pw.system.modules.user.dto.response.UserExportDTO">
+    <resultMap id="ExportResultMap" type="com.yf.system.modules.user.dto.response.UserExportDTO">
         <result column="user_name" property="userName" />
         <result column="role_ids" property="roleIds" />
         <result column="real_name" property="realName" />
