@@ -1,14 +1,15 @@
 package com.pw.system.modules.role.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.pw.base.api.api.dto.PagingReqDTO;
 import com.pw.base.api.exception.ServiceException;
-import com.pw.base.api.utils.BeanMapper;
+import com.pw.base.utils.BeanMapper;
+import com.pw.base.utils.jackson.JsonHelper;
 import com.pw.system.modules.role.dto.SysRoleDTO;
 import com.pw.system.modules.role.entity.SysRole;
 import com.pw.system.modules.role.mapper.SysRoleMapper;
@@ -49,7 +50,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         //获得数据
         IPage<SysRole> page = this.page(query, wrapper);
         //转换结果
-        IPage<SysRoleDTO> pageData = JSON.parseObject(JSON.toJSONString(page), new TypeReference<Page<SysRoleDTO>>(){});
+        IPage<SysRoleDTO> pageData = JsonHelper.parseObject(page, new TypeReference<Page<SysRoleDTO>>(){});
         return pageData;
      }
 

@@ -1,5 +1,6 @@
 package com.pw.base.api.exception;
 
+
 import com.pw.base.api.api.ApiError;
 import com.pw.base.api.api.ApiRest;
 import lombok.Data;

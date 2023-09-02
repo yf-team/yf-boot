@@ -4,7 +4,7 @@ import com.pw.base.api.api.ApiRest;
 import com.pw.base.api.api.controller.BaseController;
 import com.pw.base.api.api.dto.BaseIdReqDTO;
 import com.pw.base.api.api.dto.BaseIdsReqDTO;
-import com.pw.base.api.utils.BeanMapper;
+import com.pw.base.utils.BeanMapper;
 import com.pw.system.modules.depart.dto.SysDepartDTO;
 import com.pw.system.modules.depart.dto.request.DepartSortReqDTO;
 import com.pw.system.modules.depart.dto.response.SysDepartTreeDTO;

@@ -1,11 +1,11 @@
 package com.pw.ability.shiro.aop;
 
 
-import com.alibaba.fastjson.JSON;
-import com.pw.base.api.api.ApiError;
-import com.pw.base.api.api.ApiRest;
 import com.pw.ability.Constant;
 import com.pw.ability.shiro.jwt.JwtToken;
+import com.pw.base.api.api.ApiError;
+import com.pw.base.api.api.ApiRest;
+import com.pw.base.utils.jackson.JsonHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
@@ -33,6 +33,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 	 * 特殊授权登录
 	 */
 	private static final String URL_EXCLUDE = "/api/connect";
+	private static final String URL_SYNC = "/api/open/user/sync";
 
 	/**
 	 * 执行登录认证
@@ -47,8 +48,6 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-		System.out.println("++++网页授权....");
-
 		//这几句代码是关键
 		if (CROSS_OPTIONS.equals(request.getMethod())){
 			response.setStatus(HttpStatus.SC_NO_CONTENT);
@@ -60,7 +59,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 		boolean login = this.executeLogin(servletRequest, servletResponse);
 
 		// 三方登录只是做登录尝试，即使未登录也通过
-		if(url.startsWith(URL_EXCLUDE)){
+		if(url.startsWith(URL_EXCLUDE) || url.startsWith(URL_SYNC)){
 			return true;
 		}
 
@@ -93,7 +92,6 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 				getSubject(request, response).login(jwtToken);
 				return true;
 			}catch (Exception e){
-				e.printStackTrace();
 				// 捕获异常并返回false即可，下一步给onAccessDenied去处理
 				return false;
 			}
@@ -110,20 +108,16 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 	 * @throws Exception
 	 */
 	@Override
-	protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
+	protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
 
-		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json");
-		response.setStatus(200);
-		// 允许跨域
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setHeader("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With,token");
-		response.setHeader("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+		httpServletResponse.setCharacterEncoding("UTF-8");
+		httpServletResponse.setContentType("application/json");
+		httpServletResponse.setStatus(200);
 
 		// 写入错误信息
 		ApiRest apiRest = new ApiRest(ApiError.ERROR_10010002);
-		response.getWriter().print(JSON.toJSONString(apiRest));
+		httpServletResponse.getWriter().print(JsonHelper.toJson(apiRest));
 		return false;
 	}
 

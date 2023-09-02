@@ -1,13 +1,13 @@
 package com.pw.system.modules.user.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.pw.base.api.api.dto.PagingReqDTO;
 import com.pw.base.api.exception.ServiceException;
+import com.pw.base.utils.jackson.JsonHelper;
 import com.pw.system.modules.user.dto.SysUserBindDTO;
 import com.pw.system.modules.user.entity.SysUserBind;
 import com.pw.system.modules.user.enums.LoginType;
@@ -43,7 +43,7 @@ public class SysUserBindServiceImpl extends ServiceImpl<SysUserBindMapper, SysUs
         //获得数据
         IPage<SysUserBind> page = this.page(reqDTO.toPage(), wrapper);
         //转换结果
-        IPage<SysUserBindDTO> pageData = JSON.parseObject(JSON.toJSONString(page), new TypeReference<Page<SysUserBindDTO>>(){});
+        IPage<SysUserBindDTO> pageData = JsonHelper.parseObject(page, new TypeReference<Page<SysUserBindDTO>>(){});
         return pageData;
     }
 

@@ -1,16 +1,16 @@
 package com.pw.ability.redis.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.pw.ability.redis.service.RedisService;
+import com.pw.base.utils.jackson.JsonHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,26 +29,26 @@ public class RedisServiceImpl implements RedisService {
 
     /**
      * 删除一个或多个缓存
-     * @param key
+     * @param keys
      */
     @Override
-    public void del(String... key) {
-        if (key != null && key.length > 0) {
-            if (key.length == 1) {
-                redisTemplate.delete(key[0]);
+    public void del(String... keys) {
+        if (keys != null && keys.length > 0) {
+            if (keys.length == 1) {
+                redisTemplate.delete(keys[0]);
             } else {
-                Collection keys = CollectionUtils.arrayToList(key);
-                redisTemplate.delete(keys);
+                List<String> list = Arrays.asList(keys);
+                redisTemplate.delete(list);
             }
         }
     }
 
     @Override
-    public JSONObject getJson(String key) {
+    public Map<String,Object> getJson(String key) {
         String json = this.get(key);
 
         if(!StringUtils.isBlank(json)){
-            return JSON.parseObject(json);
+            return JsonHelper.parseObject(json, new TypeReference<Map<String,Object>>(){});
         }
 
         return null;
@@ -57,6 +57,41 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public String getString(String key) {
         return get(key);
+    }
+
+    /**
+     * 获得锁
+     * @param key 锁key
+     * @param ms 失效时间：毫秒
+     * @param tryCount 尝试次数
+     * @param tryWait 尝试间隔：毫秒
+     * @return
+     */
+    @Override
+    public boolean tryLock(String key, Long ms, int tryCount, long tryWait) {
+
+        int hasTry = 0;
+
+        // 是否获得成功
+        Boolean hasGet = null;
+
+        // 获得一个锁
+        while ((hasGet==null || !hasGet) && hasTry<=tryCount){
+
+            // 第二次以后进行等待
+            if(hasTry > 0 ){
+                try {
+                    Thread.sleep(tryWait);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            hasGet = redisTemplate.opsForValue().setIfAbsent(key, lock, ms, TimeUnit.MILLISECONDS);
+            hasTry++;
+        }
+
+        return hasGet!=null && hasGet;
     }
 
 
@@ -68,8 +103,17 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public boolean tryLock(String key, Long ms) {
-        // 获得一个50毫秒的锁
-        return redisTemplate.opsForValue().setIfAbsent(key, lock, ms, TimeUnit.MILLISECONDS);
+        return tryLock(key, ms, 5, 500);
+    }
+
+    /**
+     * 释放锁
+     * @param key
+     * @return
+     */
+    @Override
+    public void unlock(String key) {
+          redisTemplate.delete(key);
     }
 
     /**
@@ -141,5 +185,11 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public List<String> findList(String key) {
         return  redisTemplate.opsForList().range(key, 0, -1);
+    }
+
+    @Override
+    public boolean hasKey(String key) {
+        Boolean has = redisTemplate.hasKey(key);
+        return has!=null && has;
     }
 }

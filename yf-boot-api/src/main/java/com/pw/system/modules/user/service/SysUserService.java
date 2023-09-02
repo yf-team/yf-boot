@@ -2,9 +2,9 @@ package com.pw.system.modules.user.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.pw.ability.shiro.dto.SysUserLoginDTO;
 import com.pw.base.api.api.dto.PagingReqDTO;
 import com.pw.system.modules.user.dto.request.*;
-import com.pw.system.modules.user.dto.response.SysUserLoginDTO;
 import com.pw.system.modules.user.dto.response.UserListRespDTO;
 import com.pw.system.modules.user.entity.SysUser;
 

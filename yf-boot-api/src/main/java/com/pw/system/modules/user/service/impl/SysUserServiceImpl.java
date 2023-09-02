@@ -1,7 +1,5 @@
 package com.pw.system.modules.user.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -10,23 +8,25 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pw.ability.Constant;
 import com.pw.ability.captcha.service.CaptchaService;
 import com.pw.ability.redis.service.RedisService;
+import com.pw.ability.shiro.dto.SysUserLoginDTO;
 import com.pw.ability.shiro.jwt.JwtUtils;
+import com.pw.ability.shiro.service.ShiroUserService;
 import com.pw.base.api.api.ApiError;
 import com.pw.base.api.api.dto.PagingReqDTO;
 import com.pw.base.api.exception.ServiceException;
-import com.pw.base.api.utils.BeanMapper;
-import com.pw.base.api.utils.passwd.PassHandler;
-import com.pw.base.api.utils.passwd.PassInfo;
+import com.pw.base.utils.BeanMapper;
+import com.pw.base.utils.passwd.PassHandler;
+import com.pw.base.utils.passwd.PassInfo;
 import com.pw.base.utils.CacheKey;
+import com.pw.base.utils.jackson.JsonHelper;
 import com.pw.system.modules.config.enums.FuncSwitch;
 import com.pw.system.modules.config.service.CfgSwitchService;
 import com.pw.system.modules.menu.service.SysMenuService;
-import com.pw.system.modules.user.entity.SysUser;
 import com.pw.system.modules.role.entity.SysRole;
 import com.pw.system.modules.user.UserUtils;
 import com.pw.system.modules.user.dto.request.*;
-import com.pw.system.modules.user.dto.response.SysUserLoginDTO;
 import com.pw.system.modules.user.dto.response.UserListRespDTO;
+import com.pw.system.modules.user.entity.SysUser;
 import com.pw.system.modules.user.enums.LoginType;
 import com.pw.system.modules.user.enums.SysRoleId;
 import com.pw.system.modules.user.enums.UserState;
@@ -43,6 +43,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -53,7 +54,7 @@ import java.util.List;
  * @since 2020-04-13 16:57
  */
 @Service
-public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
+public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService, ShiroUserService {
 
     @Autowired
     private SysUserRoleService sysUserRoleService;
@@ -173,6 +174,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    public List<String> permissions(String userId) {
+        return sysUserRoleService.findUserPermission(userId);
+    }
+
+    @Override
+    public List<String> roles(String userId) {
+        return sysUserRoleService.listRoleIds(userId);
+    }
+
+    @Override
     public SysUserLoginDTO token(String token) {
 
         // 获得会话
@@ -183,13 +194,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new ServiceException("会话失效，请重新登录！");
         }
 
-        JSONObject json = redisService.getJson(Constant.USER_NAME_KEY + username);
+        Map<String,Object> json = redisService.getJson(Constant.USER_NAME_KEY + username);
         if (json == null) {
             throw new ServiceException(ApiError.ERROR_10010002);
         }
 
-
-        SysUserLoginDTO respDTO = json.toJavaObject(SysUserLoginDTO.class);
+        SysUserLoginDTO respDTO = JsonHelper.parseObject(json, SysUserLoginDTO.class);
 
 //        // 是否T下线
 //        boolean tick = cfgSwitchService.isOn(FuncSwitch.LOGIN_TICK);
@@ -496,7 +506,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 
             // 保存如Redis
-            redisService.set(key, JSON.toJSONString(respDTO));
+            redisService.set(key, JsonHelper.toJson(respDTO));
         }
 
         return respDTO;

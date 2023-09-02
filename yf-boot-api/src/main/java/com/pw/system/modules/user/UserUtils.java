@@ -1,9 +1,9 @@
 package com.pw.system.modules.user;
 
 
+import com.pw.ability.shiro.dto.SysUserLoginDTO;
 import com.pw.base.api.api.ApiError;
 import com.pw.base.api.exception.ServiceException;
-import com.pw.system.modules.user.dto.response.SysUserLoginDTO;
 import org.apache.shiro.SecurityUtils;
 
 import java.util.List;

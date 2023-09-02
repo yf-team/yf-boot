@@ -1,12 +1,10 @@
 package com.pw.ability.shiro;
 
 
+import com.pw.ability.shiro.dto.SysUserLoginDTO;
 import com.pw.ability.shiro.jwt.JwtToken;
 import com.pw.ability.shiro.jwt.JwtUtils;
-import com.pw.system.modules.menu.service.SysMenuService;
-import com.pw.system.modules.user.dto.response.SysUserLoginDTO;
-import com.pw.system.modules.user.service.SysUserRoleService;
-import com.pw.system.modules.user.service.SysUserService;
+import com.pw.ability.shiro.service.ShiroUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -33,15 +31,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 
 	@Autowired
 	@Lazy
-	private SysUserService sysUserService;
-
-	@Autowired
-	@Lazy
-	private SysUserRoleService sysUserRoleService;
-
-	@Autowired
-	@Lazy
-	private SysMenuService sysMenuService;
+	private ShiroUserService shiroUserService;
 
 
 	@Override
@@ -57,27 +47,27 @@ public class MyShiroRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+		log.info("++++++++++开始校验详细权限");
 
+		System.out.println("++++++++详细权限校验。。。。");
 
+		String userId = null;
 		if (principals != null) {
-
-			// 获取用户信息
 			SysUserLoginDTO user = (SysUserLoginDTO) principals.getPrimaryPrincipal();
-
-			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-
-			// 查找用户角色
-			List<String> roles = user.getRoles();
-			info.setRoles(new HashSet<>(roles));
-
-			// 查找权限明细
-			List<String> permissions = user.getPermissions();
-			info.addStringPermissions(permissions);
-
-			return info;
+			userId = user.getId();
 		}
+		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
-		throw new AuthenticationException("登录信息不存在！");
+		// 查找用户角色
+		List<String> roles = shiroUserService.roles(userId);
+		info.setRoles(new HashSet<>(roles));
+
+		// 查找权限明细
+		List<String> permissions = shiroUserService.permissions(userId);
+		info.addStringPermissions(permissions);
+
+		log.info("++++++++++校验详细权限完成");
+		return info;
 	}
 
 	/**
@@ -88,10 +78,6 @@ public class MyShiroRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
-
-
-		log.info("++++++++++开始校验详细权限2222+++");
-
 		String token = (String) auth.getCredentials();
 		if (token == null) {
 			throw new AuthenticationException("token为空!");
@@ -111,7 +97,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 	 * @throws AuthenticationException
 	 */
 	public SysUserLoginDTO checkToken(String token) throws AuthenticationException {
-		
+
 		try {
 			JwtUtils.getUsername(token);
 		} catch (Exception e) {
@@ -119,11 +105,11 @@ public class MyShiroRealm extends AuthorizingRealm {
 		}
 
 		// 查找登录用户对象
-		SysUserLoginDTO user = sysUserService.token(token);
+		SysUserLoginDTO user = shiroUserService.token(token);
 
 		// 校验token是否超时
 		if (JwtUtils.expired(token)) {
-			throw new AuthenticationException("会话失效，请重新登录！");
+			throw new AuthenticationException("登陆失效，请重试登陆!");
 		}
 
 		return user;

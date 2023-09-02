@@ -1,7 +1,7 @@
 const config: {
   code_success: number | string // 成功响应码
   code_fail: number | string // 失败响应码
-  code_overdure: number | string // 会话超时响应码
+  code_overdue: number | string // 会话超时响应码
   default_headers: AxiosHeaders
   request_timeout: number
 } = {
@@ -18,7 +18,7 @@ const config: {
   /**
    * 接口会话超时响应码
    */
-  code_overdure: 10010002,
+  code_overdue: 10010002,
 
   /**
    * 接口请求超时时间

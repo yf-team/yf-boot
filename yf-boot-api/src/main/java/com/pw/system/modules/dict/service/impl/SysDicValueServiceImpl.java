@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pw.base.api.exception.ServiceException;
-import com.pw.base.api.utils.BeanMapper;
+import com.pw.base.utils.BeanMapper;
 import com.pw.ability.redis.service.RedisService;
 import com.pw.system.modules.dict.dto.SysDicValueDTO;
 import com.pw.system.modules.dict.dto.ext.DicValueTreeDTO;

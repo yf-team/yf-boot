@@ -1,8 +1,8 @@
 package com.pw.base.utils;
 
-import com.alibaba.fastjson.JSON;
 import com.pw.base.api.api.ApiError;
 import com.pw.base.api.api.ApiRest;
+import com.pw.base.utils.jackson.JsonHelper;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletResponse;
@@ -82,7 +82,7 @@ public class InjectUtils {
             ApiRest apiRest = new ApiRest(ApiError.ERROR_10010002);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
-            response.getWriter().write(JSON.toJSONString(apiRest));
+            response.getWriter().write(JsonHelper.toJson(apiRest));
             response.getWriter().close();
 
         }catch (IOException e){

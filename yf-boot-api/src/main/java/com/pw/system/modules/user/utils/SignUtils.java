@@ -1,6 +1,6 @@
 package com.pw.system.modules.user.utils;
 
-import com.pw.base.api.utils.Md5Util;
+import com.pw.base.utils.Md5Util;
 
 
 /**

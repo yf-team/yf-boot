@@ -1,16 +1,19 @@
 package com.pw.base.api.exception;
 
+import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import com.pw.base.api.api.ApiRest;
 import org.apache.shiro.authz.AuthorizationException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
+
+import java.text.MessageFormat;
+import java.util.regex.Matcher;
+
+import static java.util.regex.Pattern.compile;
 
 /**
  * 统一异常处理类
@@ -72,7 +75,7 @@ public class ServiceExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.OK)
-    public ApiRest HandleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ApiRest handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
 
         ApiRest apiRest = new ApiRest();
         apiRest.setCode(1);
@@ -80,5 +83,43 @@ public class ServiceExceptionHandler {
         return apiRest;
     }
 
+
+    /**
+     * 处理数据校验返回
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(MysqlDataTruncation.class)
+    @ResponseStatus(HttpStatus.OK)
+    public ApiRest handleMysqlDataTruncation(MysqlDataTruncation e) {
+
+        ApiRest apiRest = new ApiRest();
+        apiRest.setCode(1);
+        String msg = e.getMessage();
+
+        // 长度超限提示优化
+        Matcher m = compile("Data too long for column '(.*?)' at row").matcher(msg);
+        while (m.find()){
+            msg = MessageFormat.format("字段`{0}`超出长度限制！", m.group(1));
+        }
+
+        apiRest.setMsg(msg);
+        return apiRest;
+    }
+
+
+    /**
+     * 处理数据校验返回
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(NoSuchBeanDefinitionException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public ApiRest handleNoSuchBeanDefinitionException(NoSuchBeanDefinitionException e) {
+        ApiRest apiRest = new ApiRest();
+        apiRest.setCode(1);
+        apiRest.setMsg(e.getMessage());
+        return apiRest;
+    }
 
 }

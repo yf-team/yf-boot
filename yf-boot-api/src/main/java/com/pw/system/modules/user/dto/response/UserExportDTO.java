@@ -1,7 +1,7 @@
 package com.pw.system.modules.user.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.pw.base.api.utils.excel.annotation.ExcelField;
+import com.pw.ability.excel.annotation.ExcelField;
 import lombok.Data;
 
 /**

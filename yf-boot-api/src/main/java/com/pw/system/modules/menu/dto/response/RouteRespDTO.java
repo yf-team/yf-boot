@@ -1,6 +1,6 @@
 package com.pw.system.modules.menu.dto.response;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,15 +22,14 @@ public class RouteRespDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    @JSONField(serialize = false)
+    @JsonIgnore
     @ApiModelProperty(value = "ID", required=true)
     private String id;
 
-    @JSONField(serialize = false)
+    @JsonIgnore
     @ApiModelProperty(value = "上级菜单")
     private String parentId;
 
-    @JSONField(serialize = false)
     @ApiModelProperty(value = "菜单类型")
     private Integer menuType;
 
@@ -46,19 +45,15 @@ public class RouteRespDTO implements Serializable {
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @JSONField(serialize = false)
     @ApiModelProperty(value = "路由标题")
     private String metaTitle;
 
-    @JSONField(serialize = false)
     @ApiModelProperty(value = "路由标题")
     private String metaIcon;
 
-    @JSONField(serialize = false)
     @ApiModelProperty(value = "高亮菜单")
     private String metaActiveMenu;
 
-    @JSONField(serialize = false)
     @ApiModelProperty(value = "是否缓存")
     private Boolean metaNoCache;
 

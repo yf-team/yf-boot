@@ -1,8 +1,8 @@
 package com.pw.system.aspect.mybatis;
 
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.pw.ability.shiro.dto.SysUserLoginDTO;
 import com.pw.base.enums.DataScope;
-import com.pw.system.modules.user.dto.response.SysUserLoginDTO;
 import lombok.extern.log4j.Log4j2;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
@@ -34,7 +34,7 @@ import java.util.Properties;
  */
 @Log4j2
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class}),})
-public class QueryInterceptor extends PaginationInnerInterceptor implements Interceptor {
+public class QueryInterceptor extends PaginationInterceptor implements Interceptor {
 
     /**
      * 客户ID
@@ -66,18 +66,28 @@ public class QueryInterceptor extends PaginationInnerInterceptor implements Inte
             ".CourseFileMapper.selectPage",
             ".CourseQaMapper.paging",
             ".CertMapper.selectPage",
-            ".CertGrantMapper.selectPage",
+            ".CertGrantMapper.paging",
             ".RepoMapper.paging",
             ".QuMapper.paging",
             ".LiveMapper.selectPage",
             ".ExamMapper.paging",
-            ".ExamMapper.online",
-            ".UserExamMapper.paging",
+            ".ExamRecordMapper.paging",
             ".UserRepoMapper.paging",
             ".TmplMapper.selectPage",
-            ".SysUserMapper.paging", // 用户列表
-            ".SysUserMapper.listForExport", // 用户导出
-            ".BattleMapper.selectPage"
+            // 用户列表
+            ".SysUserMapper.paging",
+            // 用户导出
+            ".SysUserMapper.listForExport",
+            ".BattleMapper.selectPage",
+            // 阅卷
+            ".PaperMapper.paging",
+            // 首页考试列表
+            ".StatExamMapper.dashExamList",
+            // 首页课程列表
+            ".StatCourseMapper.dashCourseList",
+            // 报名相关
+            ".ActivityMapper.paging",
+            ".ActivityJoinMapper.paging"
     };
 
 
@@ -128,11 +138,11 @@ public class QueryInterceptor extends PaginationInnerInterceptor implements Inte
             // 设置SQL
             metaObject.setValue("delegate.boundSql.sql", sql);
             // 再分页
-            return invocation;
+            return super.intercept(invocation);
         }
 
         // 执行分页
-        return invocation;
+        return super.intercept(invocation);
     }
 
     @Override

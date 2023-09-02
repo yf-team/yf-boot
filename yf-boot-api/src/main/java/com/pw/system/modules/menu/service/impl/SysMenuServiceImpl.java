@@ -1,11 +1,11 @@
 package com.pw.system.modules.menu.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pw.base.api.exception.ServiceException;
-import com.pw.base.api.utils.BeanMapper;
+import com.pw.base.utils.BeanMapper;
 import com.pw.base.utils.CacheKey;
+import com.pw.base.utils.jackson.JsonHelper;
 import com.pw.system.modules.depart.dto.request.DepartSortReqDTO;
 import com.pw.system.modules.menu.dto.SysMenuDTO;
 import com.pw.system.modules.menu.dto.response.MenuTreeRespDTO;
@@ -109,7 +109,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             throw new ServiceException("您还没有任何角色授权，请联系管理员！");
         }
 
-        System.out.println("++++++++++角色列表：" + JSON.toJSONString(roleList));
+        System.out.println("++++++++++角色列表：" + JsonHelper.toJson(roleList));
 
         // 获取路由表
         List<RouteRespDTO> routes = baseMapper.listMenuByRoles(roleList);
@@ -144,7 +144,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Cacheable(value = CacheKey.MENU, key = "'permissions-'+#p0")
     @Override
     public List<String> listPermissionByRoles(List<String> roleIds) {
-        System.out.println("+++++roles:" + JSON.toJSONString(roleIds));
+        System.out.println("+++++roles:" + JsonHelper.toJson(roleIds));
         return baseMapper.listPermissionByRoles(roleIds);
     }
 

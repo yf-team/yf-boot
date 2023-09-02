@@ -1,20 +1,20 @@
 package com.pw.system.modules.dict.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.pw.base.api.api.dto.PagingReqDTO;
 import com.pw.base.api.exception.ServiceException;
-import com.pw.base.api.utils.BeanMapper;
-import com.pw.system.modules.dict.service.SysDicService;
-import org.apache.commons.lang3.StringUtils;
+import com.pw.base.utils.BeanMapper;
+import com.pw.base.utils.jackson.JsonHelper;
 import com.pw.system.modules.dict.dto.SysDicDTO;
 import com.pw.system.modules.dict.entity.SysDic;
 import com.pw.system.modules.dict.mapper.SysDicMapper;
+import com.pw.system.modules.dict.service.SysDicService;
 import com.pw.system.modules.dict.service.SysDicValueService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,7 +68,7 @@ public class SysDicServiceImpl extends ServiceImpl<SysDicMapper, SysDic> impleme
         //获得数据
         IPage<SysDic> page = this.page(reqDTO.toPage(), wrapper);
         //转换结果
-        IPage<SysDicDTO> pageData = JSON.parseObject(JSON.toJSONString(page), new TypeReference<Page<SysDicDTO>>(){});
+        IPage<SysDicDTO> pageData = JsonHelper.parseObject(page, new TypeReference<Page<SysDicDTO>>(){});
         return pageData;
      }
 

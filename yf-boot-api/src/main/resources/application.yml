@@ -5,6 +5,22 @@ spring:
       active: dev
   main:
     allow-bean-definition-overriding: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+    deserialization:
+      fail_on_unknown_properties: false
+    parser:
+      # 允许出现特殊字符和转义符
+      allow_unquoted_control_chars: true
+      #允许出现单引号
+      allow_single_quotes: true
+    serialization:
+      fail-on-empty-beans: false
+    mapper:
+      # 支持类型转换
+      allow-coercion-of-scalars: true
 server:
   port: 8080
   # 启用服务端压缩

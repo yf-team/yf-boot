@@ -1,21 +1,22 @@
 package com.pw.system.modules.user.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.pw.base.api.api.dto.PagingReqDTO;
 import com.pw.base.api.exception.ServiceException;
+import com.pw.base.utils.jackson.JsonHelper;
+import com.pw.system.modules.role.entity.SysRole;
+import com.pw.system.modules.role.service.SysRoleService;
+import com.pw.system.modules.user.UserUtils;
 import com.pw.system.modules.user.dto.SysUserRoleDTO;
 import com.pw.system.modules.user.dto.request.UserRoleReqDTO;
-import com.pw.system.modules.role.entity.SysRole;
 import com.pw.system.modules.user.entity.SysUserRole;
 import com.pw.system.modules.user.mapper.SysUserRoleMapper;
-import com.pw.system.modules.role.service.SysRoleService;
 import com.pw.system.modules.user.service.SysUserRoleService;
-import com.pw.system.modules.user.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +51,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
         //获得数据
         IPage<SysUserRole> page = this.page(query, wrapper);
         //转换结果
-        IPage<SysUserRoleDTO> pageData = JSON.parseObject(JSON.toJSONString(page), new TypeReference<Page<SysUserRoleDTO>>(){});
+        IPage<SysUserRoleDTO> pageData = JsonHelper.parseObject(page, new TypeReference<Page<SysUserRoleDTO>>(){});
         return pageData;
      }
 
@@ -140,6 +141,24 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     @Override
     public int findMaxLevel(String userId) {
         return baseMapper.findMaxLevel(userId);
+    }
+
+    @Override
+    public List<String> findUserPermission(String userId) {
+        return baseMapper.findUserPermission(userId);
+    }
+
+
+    @Override
+    public List<String> listRoleIds(String userId) {
+        // 角色是要
+        List<SysRole> roles = this.listRoles(userId);
+        List<String> ids = new ArrayList<>();
+        for(SysRole role: roles){
+            // 角色ID
+            ids.add(role.getId());
+        }
+        return ids;
     }
 
 

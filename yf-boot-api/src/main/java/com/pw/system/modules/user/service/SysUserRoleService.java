@@ -77,4 +77,19 @@ public interface SysUserRoleService extends IService<SysUserRole> {
      * @return
      */
     int findMaxLevel(String userId);
+
+    /**
+     * 查找用户的权限标签
+     * @param userId
+     * @return
+     */
+    List<String> findUserPermission(String userId);
+
+
+    /**
+     * 查找角色ID列表
+     * @param userId
+     * @return
+     */
+    List<String> listRoleIds(String userId);
 }

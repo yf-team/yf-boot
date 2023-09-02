@@ -7,7 +7,7 @@ import com.pw.base.api.api.controller.BaseController;
 import com.pw.base.api.api.dto.BaseIdReqDTO;
 import com.pw.base.api.api.dto.BaseIdsReqDTO;
 import com.pw.base.api.api.dto.PagingReqDTO;
-import com.pw.base.api.utils.BeanMapper;
+import com.pw.base.utils.BeanMapper;
 import com.pw.system.modules.role.dto.SysRoleDTO;
 import com.pw.system.modules.role.entity.SysRole;
 import com.pw.system.modules.role.service.SysRoleMenuService;

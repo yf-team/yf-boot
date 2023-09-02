@@ -1,6 +1,5 @@
 package com.pw.ability.upload.provides.local.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.pw.base.api.exception.ServiceException;
 import com.pw.ability.Constant;
 import com.pw.ability.upload.enums.UploadProvider;
@@ -9,6 +8,7 @@ import com.pw.ability.upload.provides.local.dto.UploadReqDTO;
 import com.pw.ability.upload.provides.local.dto.UploadRespDTO;
 import com.pw.ability.upload.provides.local.service.LocalUpService;
 import com.pw.ability.upload.provides.local.utils.OssUtils;
+import com.pw.base.utils.jackson.JsonHelper;
 import com.pw.system.modules.config.dto.CfgUploadDTO;
 import com.pw.system.modules.config.service.CfgUploadService;
 import lombok.extern.log4j.Log4j2;
@@ -158,7 +158,7 @@ public class LocalUpServiceImpl implements LocalUpService {
     @Override
     public LocalConfig getConfig(){
         CfgUploadDTO dto = cfgUploadService.detail(UploadProvider.LOCAL);
-        LocalConfig cfg = JSON.parseObject(dto.getData(), LocalConfig.class);
+        LocalConfig cfg = JsonHelper.parseObject(dto.getData(), LocalConfig.class);
         return cfg;
     }
 

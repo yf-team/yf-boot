@@ -3,7 +3,7 @@ package com.pw.system.modules.config.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.pw.base.api.utils.BeanMapper;
+import com.pw.base.utils.BeanMapper;
 import com.pw.system.modules.config.dto.CfgUploadDTO;
 import com.pw.system.modules.config.entity.CfgUpload;
 import com.pw.system.modules.config.mapper.CfgUploadMapper;

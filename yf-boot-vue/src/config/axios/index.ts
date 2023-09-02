@@ -17,7 +17,7 @@ import axios, {
 } from 'axios'
 
 import qs from 'qs'
-const { code_success, code_overdure } = config
+const { code_success, code_overdue } = config
 
 // 接口请求地址
 export const PATH_URL = import.meta.env.VITE_API_HOST
@@ -27,7 +27,7 @@ const appStore = useAppStoreWithOut()
 
 // 创建axios实例
 const service: AxiosInstance = axios.create({
-  baseURL: PATH_URL, // api 的 base_url
+  baseURL: PATH_URL, // 服务端地址
   timeout: config.request_timeout // 请求超时时间
 })
 
@@ -35,7 +35,6 @@ const service: AxiosInstance = axios.create({
 service.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     const userInfo = appStore.getUserInfo
-
     // 传入token
     if (userInfo && userInfo.token) {
       if (config && config.headers) {
@@ -79,13 +78,13 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   (response: AxiosResponse<Recordable>) => {
+    console.log('响应码数据', response.data)
+
     if (response.data.code === code_success) {
       return response.data
     }
 
-    console.log(response.data.code)
-
-    if (response.data.code === code_overdure) {
+    if (response.data.code === code_overdue) {
       ElMessage.error(response.data.msg)
 
       // 置空残留会话
@@ -103,7 +102,7 @@ service.interceptors.response.use(
     }
   },
   (error: AxiosError) => {
-    console.log('err' + error) // for debug
+    console.log('错误了？', error) // for debug
     ElMessage.error(error.message)
     return Promise.reject(error)
   }

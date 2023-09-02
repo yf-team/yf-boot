@@ -1,7 +1,6 @@
 package com.pw.base.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.pw.base.api.utils.DecimalUtils;
+import com.pw.base.utils.jackson.JsonHelper;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -50,6 +49,6 @@ public class CalcUtils {
 
     public static void main(String[] args) {
         List<BigDecimal> list = avgSplit(new BigDecimal(10), 3);
-        System.out.println(JSON.toJSON(list));
+        System.out.println(JsonHelper.toJson(list));
     }
 }

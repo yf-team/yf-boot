@@ -1,15 +1,15 @@
 package com.pw.system.aspect.dict;
 
-import com.alibaba.fastjson.serializer.ValueFilter;
-import com.pw.base.api.annon.Dict;
-import com.pw.base.api.utils.SpringUtils;
-import com.pw.base.utils.InjectUtils;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.pw.base.utils.SpringUtils;
 import com.pw.system.modules.dict.service.SysDicValueService;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.reflect.Field;
+import java.io.IOException;
 
 /**
  * 数据字典翻译及数据脱敏工作
@@ -18,78 +18,68 @@ import java.lang.reflect.Field;
  */
 @Data
 @Log4j2
-public class DataDictFilter implements ValueFilter {
+public class DataDictFilter extends JsonSerializer<Object> {
+
+    private static final String DICT_APPEND = "_dictText";
+
+    private String fieldName;
+    private String dicCode;
+    private String dictTable;
+    private String dicText;
+
+    public DataDictFilter(String fieldName, String dicCode, String dictTable, String dicText){
+        this.fieldName = fieldName;
+        this.dicCode = dicCode;
+        this.dictTable = dictTable;
+        this.dicText = dicText;
+    }
 
     /**
      * 获取字典业务类
      */
     private SysDicValueService sysDicValueService = SpringUtils.getBean("sysDicValueServiceImpl", SysDicValueService.class);
 
+
     @Override
-    public Object process(Object object, String name, Object value) {
+    public void serialize(Object o, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
 
-        // 只过滤String和Integer类型
-        if (null == value || (!(value instanceof String) && !(value instanceof Integer))) {
-            return value;
-        }
-        try {
-            Field field = InjectUtils.getField(object.getClass(), name);
-            if (String.class != field.getType() && Integer.class != field.getType()) {
-                return value;
+        // 获取字段值
+        String value = String.valueOf(o);
+
+        // 原字段值不变
+        gen.writeObject(o);
+
+        if(StringUtils.isNotBlank(value)){
+            // 原字段加上后缀
+            String newField = fieldName + DICT_APPEND;
+            String trans = this.translate(value);
+            // 写入新的字段
+            if(StringUtils.isNotBlank(trans)) {
+                gen.writeObjectField(newField, trans);
             }
-
-            // 数据字典
-            Dict dict = field.getAnnotation(Dict.class);
-            if (dict != null) {
-
-                // 查找另外字段
-                String newField = field.getName() + "_dictText";
-                Field valueField = InjectUtils.getField(object.getClass(), newField);
-
-                // 需要在返回类定义与原字段名称匹配的_dictText
-                if (value != null) {
-                    // 翻译数据并注入
-                    String code = dict.dicCode();
-                    String text = dict.dicText();
-                    String table = dict.dictTable();
-                    String key = String.valueOf(value);
-                    String dicText = this.transDic(code, text, table, key);
-                    valueField.setAccessible(true);
-                    valueField.set(object, dicText);
-                }
-            }
-
-            return value;
-
-        } catch (Exception e) {
-            // log.error("当前数据类型为{},值为{}", object.getClass(), value);
-            return value;
         }
     }
 
-    /**
-     * 翻译字典
-     *
-     * @param code
-     * @param text
-     * @param table
-     * @param key
-     * @return
-     */
-    private String transDic(String code, String text, String table, String key) {
 
-        if (StringUtils.isEmpty(key)) {
-            return null;
+    /**
+     * 进行数据字典的翻译
+     * @return 翻译后的值
+     */
+    private String translate(String fieldValue) {
+
+        // 无值不翻译
+        if (StringUtils.isEmpty(fieldValue)) {
+            return "";
         }
 
         try {
             // 翻译值
             String dictText;
 
-            if (StringUtils.isEmpty(table)) {
-                dictText = sysDicValueService.findDictText(code, key.trim());
+            if (StringUtils.isEmpty(dictTable)) {
+                dictText = sysDicValueService.findDictText(dicCode, fieldValue);
             } else {
-                dictText = sysDicValueService.findTableText(table, text, code, key.trim());
+                dictText = sysDicValueService.findTableText(dictTable, dicText, dicCode, fieldValue);
             }
             if (!StringUtils.isEmpty(dictText)) {
                 return dictText;
@@ -100,6 +90,4 @@ public class DataDictFilter implements ValueFilter {
 
         return "";
     }
-
-
 }

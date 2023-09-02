@@ -1,22 +1,38 @@
 package com.pw.ability.redis.service;
 
-import com.alibaba.fastjson.JSONObject;
-
 import java.util.List;
+import java.util.Map;
 
 /**
  * Redis公共服务
- * @author bool 
+ * @author bool
  */
 public interface RedisService {
 
     /**
-     * 获得一个锁
+     * 获得锁
+     * @param key 锁key
+     * @param ms 失效时间：毫秒
+     * @param tryCount 尝试次数
+     * @param tryWait 尝试间隔：毫秒
+     * @return
+     */
+    boolean tryLock(String key, Long ms, int tryCount, long tryWait);
+
+    /**
+     * 获得一个锁：尝试5次，每次等待500ms
      * @param key
-     * @param ms 锁入毫秒数
+     * @param ms 锁定毫秒数
      * @return
      */
     boolean tryLock(String key, Long ms);
+
+    /**
+     * 释放锁
+     * @param key
+     * @return
+     */
+    public void unlock(String key);
 
     /**
      * 删除缓存key
@@ -29,7 +45,7 @@ public interface RedisService {
      * @param key
      * @return
      */
-    JSONObject getJson(String key);
+    Map<String,Object> getJson(String key);
 
     /**
      * 获取缓存内容
@@ -78,5 +94,12 @@ public interface RedisService {
      * @return
      */
     List<String> findList(String key);
+
+    /**
+     * 包含值
+     * @param key
+     * @return
+     */
+    boolean hasKey(String key);
 
 }

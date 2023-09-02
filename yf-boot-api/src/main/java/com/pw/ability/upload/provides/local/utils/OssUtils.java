@@ -2,7 +2,7 @@ package com.pw.ability.upload.provides.local.utils;
 
 
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import com.pw.base.api.utils.DateUtils;
+import com.pw.base.utils.DateUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -10,7 +10,7 @@ import java.util.Date;
 
 /**
  * 文件上传工具
- * @author bool 
+ * @author bool
  * @date 2019-07-30 21:00
  */
 public class OssUtils {
