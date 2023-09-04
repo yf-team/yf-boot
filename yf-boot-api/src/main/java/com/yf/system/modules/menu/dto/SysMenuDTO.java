@@ -76,7 +76,4 @@ public class SysMenuDTO implements Serializable {
     @ApiModelProperty(value = "修改人", required=true)
     private String updateBy;
 
-    @ApiModelProperty(value = "数据标识", required=true)
-    private Integer dataFlag;
-
 }

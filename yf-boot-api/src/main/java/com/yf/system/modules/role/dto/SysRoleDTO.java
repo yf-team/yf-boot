@@ -32,7 +32,6 @@ public class SysRoleDTO implements Serializable {
     @Dict(dicCode = "data_scope")
     @ApiModelProperty(value = "数据权限", required=true)
     private Integer dataScope;
-    private String dataScope_dictText;
 
     @ApiModelProperty(value = "越大越高", required=true)
     private Integer roleLevel;

@@ -254,10 +254,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 查找旧的用户信息
         SysUser u1 = this.getById(UserUtils.getUserId());
 
-        // 人脸照片
-        String oldFace = u1.getFace();
-        String newFace = reqDTO.getFace();
-
         SysUser user = new SysUser();
         user.setId(UserUtils.getUserId());
         BeanMapper.copy(reqDTO, user);
@@ -315,18 +311,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         // 保存基本信息
         SysUser user;
-        boolean isAdd = false;
-        String oldFace = "";
 
         // 添加模式
         if (StringUtils.isBlank(reqDTO.getId())) {
             user = new SysUser();
             BeanMapper.copy(reqDTO, user);
             user.setId(IdWorker.getIdStr());
-            isAdd = true;
         } else {
             user = this.getById(reqDTO.getId());
-            oldFace = user.getFace();
             BeanMapper.copy(reqDTO, user);
         }
 

@@ -17,7 +17,7 @@ import java.util.Date;
 * @since 2021-08-02 14:49
 */
 @Data
-@TableName("sys_user_bind")
+@TableName("el_sys_user_bind")
 public class SysUserBind extends Model<SysUserBind> {
 
     private static final long serialVersionUID = 1L;

@@ -24,9 +24,6 @@ public class SysUserUpdateReqDTO implements Serializable {
     @ApiModelProperty(value = "头像", required=true)
     private String avatar;
 
-    @ApiModelProperty(value = "人脸照片")
-    private String face;
-
     @ApiModelProperty(value = "真实姓名", required=true)
     private String realName;
 

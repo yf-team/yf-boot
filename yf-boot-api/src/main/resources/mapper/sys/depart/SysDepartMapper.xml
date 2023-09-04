@@ -15,12 +15,11 @@
         <result column="update_time" property="updateTime" />
         <result column="create_by" property="createBy" />
         <result column="update_by" property="updateBy" />
-        <result column="data_flag" property="dataFlag" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        `id`,`dept_type`,`parent_id`,`dept_name`,`dept_code`,`dept_level`,`sort`,`create_time`,`update_time`,`create_by`,`update_by`,`data_flag`
+        `id`,`dept_type`,`parent_id`,`dept_name`,`dept_code`,`dept_level`,`sort`,`create_time`,`update_time`,`create_by`,`update_by`
     </sql>
 
 
@@ -32,7 +31,7 @@
 
 
     <select id="findChildren" resultMap="TreeResultMap">
-        SELECT dp.*,"${deptCodes}" AS deptCodes,"${likeCode}" AS likeCode FROM sys_depart dp WHERE parent_id=#{id}
+        SELECT dp.*,"${deptCodes}" AS deptCodes,"${likeCode}" AS likeCode FROM el_sys_depart dp WHERE parent_id=#{id}
         <if test="deptCodes!=null and deptCodes!=''">
             AND (
              dept_code IN (${deptCodes})
@@ -46,7 +45,7 @@
     </select>
 
     <select id="tree" resultMap="TreeResultMap">
-        SELECT dp.*,"${query.deptCodes}" AS deptCodes,"${query.likeCode}" AS likeCode FROM sys_depart dp
+        SELECT dp.*,"${query.deptCodes}" AS deptCodes,"${query.likeCode}" AS likeCode FROM el_sys_depart dp
         WHERE dp.parent_id='0'
 
         <if test="query!=null">

@@ -18,7 +18,7 @@ import java.util.Date;
 * @since 2020-04-13 16:57
 */
 @Data
-@TableName("sys_role")
+@TableName("el_sys_role")
 public class SysRole extends Model<SysRole> {
 
     private static final long serialVersionUID = 1L;

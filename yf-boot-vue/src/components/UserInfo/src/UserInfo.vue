@@ -42,7 +42,7 @@ const loginOut = () => {
         clear()
         tagsViewStore.delAllViews()
         resetRouter() // 重置静态路由表
-        replace('/login')
+        await replace('/login')
       }
     })
     .catch(() => {})
@@ -53,10 +53,6 @@ const dialogVisible = ref<boolean>(false)
 // 锁定屏幕
 const lockScreen = () => {
   dialogVisible.value = true
-}
-
-const toDocument = () => {
-  window.open('https://element-plus-admin-doc.cn/')
 }
 
 const userInfo = computed(() => appStore.getUserInfo)

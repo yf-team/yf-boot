@@ -31,7 +31,6 @@ public class SysDicDTO implements Serializable {
     @Dict(dicCode = "dic_type")
     @ApiModelProperty(value = "1分类字典,2数据字典")
     private Integer type;
-    private String type_dictText;
 
     @ApiModelProperty(value = "字典名称")
     private String title;

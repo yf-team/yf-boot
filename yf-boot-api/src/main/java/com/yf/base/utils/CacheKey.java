@@ -28,11 +28,6 @@ public interface CacheKey {
      */
     String TOKEN = "user:token";
 
-    /**
-     * 人脸识别
-     */
-    String FACE = "sys:face";
-
 
     /**
      * 上传配置

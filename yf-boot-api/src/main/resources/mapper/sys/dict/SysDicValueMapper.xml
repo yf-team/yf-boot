@@ -18,7 +18,7 @@
     </sql>
 
     <select id="findDictText" resultType="String">
-        SELECT `title` FROM sys_dic_value WHERE `dic_code`=#{dicCode} AND `value`=#{value}  LIMIT 1
+        SELECT `title` FROM el_sys_dic_value WHERE `dic_code`=#{dicCode} AND `value`=#{value}  LIMIT 1
     </select>
 
     <select id="findTableText" resultType="String">

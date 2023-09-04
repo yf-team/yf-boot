@@ -16,7 +16,7 @@ import lombok.Data;
 * @since 2021-03-02 15:44
 */
 @Data
-@TableName("sys_role_menu")
+@TableName("el_sys_role_menu")
 public class SysRoleMenu extends Model<SysRoleMenu> {
 
     private static final long serialVersionUID = 1L;

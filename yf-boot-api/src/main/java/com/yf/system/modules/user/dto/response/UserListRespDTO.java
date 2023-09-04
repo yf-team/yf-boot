@@ -29,18 +29,13 @@ public class UserListRespDTO implements Serializable {
     @ApiModelProperty(value = "真实姓名", required=true)
     private String realName;
 
-    @Dict(dictTable = "sys_depart", dicCode = "dept_code", dicText = "dept_name")
+    @Dict(dictTable = "el_sys_depart", dicCode = "dept_code", dicText = "dept_name")
     @ApiModelProperty(value = "部门编码", required=true)
     private String deptCode;
-    private String deptCode_dictText;
 
     @Dict(dicCode = "user_state")
     @ApiModelProperty(value = "状态", required=true)
     private Integer state;
-    private String state_dictText;
-
-    @ApiModelProperty(value = "积分", required=true)
-    private Integer points;
 
     @ApiModelProperty(value = "身份证号码")
     private String idCard;

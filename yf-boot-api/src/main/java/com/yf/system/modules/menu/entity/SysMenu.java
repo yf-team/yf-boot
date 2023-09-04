@@ -18,7 +18,7 @@ import java.util.Date;
 * @since 2021-03-02 13:09
 */
 @Data
-@TableName("sys_menu")
+@TableName("el_sys_menu")
 public class SysMenu extends Model<SysMenu> {
 
     private static final long serialVersionUID = 1L;
@@ -124,10 +124,4 @@ public class SysMenu extends Model<SysMenu> {
      */
     @TableField("update_by")
     private String updateBy;
-
-    /**
-     * 数据标识
-     */
-    @TableField("data_flag")
-    private Integer dataFlag;
 }

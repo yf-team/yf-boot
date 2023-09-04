@@ -32,9 +32,6 @@ public class SysUserLoginDTO implements Serializable {
     @ApiModelProperty(value = "头像", required=true)
     private String avatar;
 
-    @ApiModelProperty(value = "人脸", required=true)
-    private String face;
-
     @ApiModelProperty(value = "真实姓名", required=true)
     private String realName;
 
@@ -47,16 +44,13 @@ public class SysUserLoginDTO implements Serializable {
     @ApiModelProperty(value = "手机", required=true)
     private String mobile;
 
-    @ApiModelProperty(value = "用户积分", required=true)
-    private Integer points;
-
     @ApiModelProperty(value = "数据权限", required=true)
     private Integer dataScope;
 
     @ApiModelProperty(value = "权限级别", required=true)
     private Integer roleLevel;
 
-    @Dict(dictTable = "sys_depart", dicCode = "dept_code", dicText = "dept_name")
+    @Dict(dictTable = "el_sys_depart", dicCode = "dept_code", dicText = "dept_name")
     @ApiModelProperty(value = "部门编码", required=true)
     private String deptCode;
 

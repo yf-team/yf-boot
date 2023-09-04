@@ -32,9 +32,6 @@ public class SysUserDTO implements Serializable {
     @ApiModelProperty(value = "头像", required=true)
     private String avatar;
 
-    @ApiModelProperty(value = "人脸照片")
-    private String face;
-
     @ApiModelProperty(value = "真实姓名", required=true)
     private String realName;
 
@@ -47,9 +44,6 @@ public class SysUserDTO implements Serializable {
     @ApiModelProperty(value = "状态", required=true)
     private Integer state;
 
-    @ApiModelProperty(value = "积分", required=true)
-    private Integer points;
-
     @ApiModelProperty(value = "身份证号码")
     private String idCard;
 
@@ -59,10 +53,9 @@ public class SysUserDTO implements Serializable {
     @ApiModelProperty(value = "邮箱")
     private String email;
 
-    @Dict(dictTable = "sys_depart", dicCode = "dept_code", dicText = "dept_name")
+    @Dict(dictTable = "el_sys_depart", dicCode = "dept_code", dicText = "dept_name")
     @ApiModelProperty(value = "部门编码")
     private String deptCode;
-    private String deptCode_dictText;
 
     @ApiModelProperty(value = "创建时间", required=true)
     private Date createTime;
@@ -76,6 +69,4 @@ public class SysUserDTO implements Serializable {
     @ApiModelProperty(value = "修改人", required=true)
     private String updateBy;
 
-    @ApiModelProperty(value = "数据标识", required=true)
-    private Integer dataFlag;
 }

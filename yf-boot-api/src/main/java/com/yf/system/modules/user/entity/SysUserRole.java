@@ -16,7 +16,7 @@ import lombok.Data;
 * @since 2020-04-13 16:57
 */
 @Data
-@TableName("sys_user_role")
+@TableName("el_sys_user_role")
 public class SysUserRole extends Model<SysUserRole> {
 
     private static final long serialVersionUID = 1L;

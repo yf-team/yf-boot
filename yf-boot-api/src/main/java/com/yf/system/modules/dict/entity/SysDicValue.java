@@ -16,7 +16,7 @@ import lombok.Data;
 * @since 2020-12-01 14:00
 */
 @Data
-@TableName("sys_dic_value")
+@TableName("el_sys_dic_value")
 public class SysDicValue extends Model<SysDicValue> {
 
     private static final long serialVersionUID = 1L;

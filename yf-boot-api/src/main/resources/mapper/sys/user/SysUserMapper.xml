@@ -7,12 +7,10 @@
         <id column="id" property="id" />
         <result column="user_name" property="userName" />
         <result column="avatar" property="avatar" />
-        <result column="face" property="face" />
         <result column="real_name" property="realName" />
         <result column="password" property="password" />
         <result column="salt" property="salt" />
         <result column="state" property="state" />
-        <result column="points" property="points" />
         <result column="id_card" property="idCard" />
         <result column="mobile" property="mobile" />
         <result column="email" property="email" />
@@ -21,12 +19,11 @@
         <result column="update_time" property="updateTime" />
         <result column="create_by" property="createBy" />
         <result column="update_by" property="updateBy" />
-        <result column="data_flag" property="dataFlag" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        `id`,`user_name`,`avatar`,`face`,`real_name`,`password`,`salt`,`state`,`points`,`id_card`,`mobile`,`email`,`dept_code`,`create_time`,`update_time`,`create_by`,`update_by`,`data_flag`
+        `id`,`user_name`,`avatar`,`real_name`,`password`,`salt`,`state`,`id_card`,`mobile`,`email`,`dept_code`,`create_time`,`update_time`,`create_by`,`update_by`
     </sql>
 
     <resultMap id="ListResultMap"
@@ -37,7 +34,6 @@
         <result column="avatar" property="avatar" />
         <result column="real_name" property="realName" />
         <result column="state" property="state" />
-        <result column="points" property="points" />
         <result column="id_card" property="idCard" />
         <result column="mobile" property="mobile" />
         <result column="email" property="email" />
@@ -54,26 +50,25 @@
         <result column="email" property="email" />
         <result column="mobile" property="mobile" />
         <result column="id_card" property="idCard" />
-        <result column="points" property="points" />
         <result column="dept_code" property="deptCode" />
     </resultMap>
 
     <select id="listForExport" resultMap="ExportResultMap">
-        SELECT user_name,real_name,mobile,email,id_card,points,dept_code,
-        (SELECT GROUP_CONCAT(role_id SEPARATOR ',') FROM sys_user_role WHERE user_id=uc.id) AS role_ids
-        FROM sys_user uc
-        LEFT JOIN sys_user_role ur ON ur.user_id=uc.id
-        <include refid="pagingQuery"></include>
+        SELECT user_name,real_name,mobile,email,id_card,dept_code,
+        (SELECT GROUP_CONCAT(role_id SEPARATOR ',') FROM el_sys_user_role WHERE user_id=uc.id) AS role_ids
+        FROM el_sys_user uc
+        LEFT JOIN el_sys_user_role ur ON ur.user_id=uc.id
+        <include refid="pagingQuery" />
         GROUP BY uc.id
     </select>
 
 
     <select id="paging" resultMap="ListResultMap">
         SELECT uc.*,
-        (SELECT GROUP_CONCAT(b.role_name) FROM sys_user_role a LEFT JOIN sys_role b ON a.role_id=b.id WHERE a.user_id=uc.id) as roleNames
-        FROM sys_user uc
-        LEFT JOIN sys_user_role ur ON ur.user_id=uc.id
-        <include refid="pagingQuery"></include>
+        (SELECT GROUP_CONCAT(b.role_name) FROM el_sys_user_role a LEFT JOIN el_sys_role b ON a.role_id=b.id WHERE a.user_id=uc.id) as roleNames
+        FROM el_sys_user uc
+        LEFT JOIN el_sys_user_role ur ON ur.user_id=uc.id
+        <include refid="pagingQuery" />
         GROUP BY uc.id
         <if test="page.orders!=null and page.orders.size() > 0">
             ORDER BY

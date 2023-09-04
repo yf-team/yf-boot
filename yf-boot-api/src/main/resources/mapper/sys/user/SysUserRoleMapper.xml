@@ -17,15 +17,15 @@
 
     <select id="listByUser" resultMap="com.yf.system.modules.role.mapper.SysRoleMapper.BaseResultMap">
         SELECT *
-        FROM sys_role
-        WHERE id IN (SELECT role_id FROM sys_user_role WHERE user_id = #{userId})
+        FROM el_sys_role
+        WHERE id IN (SELECT role_id FROM el_sys_user_role WHERE user_id = #{userId})
     </select>
 
     <select id="findUserPermission" resultType="String">
         SELECT DISTINCT mu.permission_tag
-        FROM sys_user_role ur
-                 LEFT JOIN sys_role_menu rm ON ur.role_id = rm.role_id
-                 LEFT JOIN sys_menu mu ON rm.menu_id = mu.id
+        FROM el_sys_user_role ur
+                 LEFT JOIN el_sys_role_menu rm ON ur.role_id = rm.role_id
+                 LEFT JOIN el_sys_menu mu ON rm.menu_id = mu.id
         WHERE mu.id IS NOT NULL
           AND mu.permission_tag IS NOT NULL
           AND mu.permission_tag!=''
@@ -33,8 +33,8 @@
     </select>
 
     <select id="findMaxRole" resultMap="BaseResultMap">
-        SELECT ur.* FROM sys_user_role ur
-        LEFT JOIN sys_role role ON ur.role_id=role.id
+        SELECT ur.* FROM el_sys_user_role ur
+        LEFT JOIN el_sys_role role ON ur.role_id=role.id
         WHERE ur.user_id=#{userId}
         ORDER BY role.data_scope DESC
         LIMIT 1
@@ -42,13 +42,13 @@
 
     <select id="countWithLevel" resultType="int">
         SELECT COUNT(DISTINCT ur.user_id)
-        FROM sys_user_role ur
-        LEFT JOIN sys_role role ON ur.role_id=role.id WHERE role.role_level &lt; #{roleLevel}
+        FROM el_sys_user_role ur
+        LEFT JOIN el_sys_role role ON ur.role_id=role.id WHERE role.role_level &lt; #{roleLevel}
         AND ur.user_id IN <foreach item="item" collection="userIds" separator="," open="(" close=")" index="">'${item}'</foreach>
     </select>
 
     <select id="findMaxLevel" resultType="int">
-        SELECT IFNULL(MAX(role_level),0) FROM sys_user_role rl LEFT JOIN sys_role role ON rl.role_id=role.id
+        SELECT IFNULL(MAX(role_level),0) FROM el_sys_user_role rl LEFT JOIN el_sys_role role ON rl.role_id=role.id
         WHERE rl.user_id=#{userId};
     </select>
 

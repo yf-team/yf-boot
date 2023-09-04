@@ -210,16 +210,6 @@ watch(
     </div>
 
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.dynamicRouter') }}</span>
-      <ElSwitch v-model="dynamicRouter" @change="dynamicRouterChange" />
-    </div>
-
-    <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.serverDynamicRouter') }}</span>
-      <ElSwitch v-model="serverDynamicRouter" @change="serverDynamicRouterChange" />
-    </div>
-
-    <div class="flex justify-between items-center">
       <span class="text-14px">{{ t('setting.fixedMenu') }}</span>
       <ElSwitch v-model="fixedMenu" @change="fixedMenuChange" />
     </div>

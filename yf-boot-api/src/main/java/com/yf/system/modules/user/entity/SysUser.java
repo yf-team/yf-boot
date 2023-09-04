@@ -18,7 +18,7 @@ import java.util.Date;
 * @since 2020-04-13 16:57
 */
 @Data
-@TableName("sys_user")
+@TableName("el_sys_user")
 public class SysUser extends Model<SysUser> {
 
     private static final long serialVersionUID = 1L;
@@ -41,11 +41,6 @@ public class SysUser extends Model<SysUser> {
     private String avatar;
 
     /**
-     * 人脸照片
-     */
-    private String face;
-
-    /**
      * 真实姓名
      */
     @TableField("real_name")
@@ -65,11 +60,6 @@ public class SysUser extends Model<SysUser> {
      * 状态
      */
     private Integer state;
-
-    /**
-     * 积分
-     */
-    private Integer points;
 
     /**
      * 身份证号码
@@ -116,11 +106,5 @@ public class SysUser extends Model<SysUser> {
      */
     @TableField("update_by")
     private String updateBy;
-
-    /**
-     * 数据标识
-     */
-    @TableField("data_flag")
-    private Integer dataFlag;
 
 }

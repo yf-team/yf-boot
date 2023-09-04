@@ -17,7 +17,7 @@
       </div>
 
       <div class="opt-box-right">
-        <el-button :icon="Refresh" size="small" circle @click="loadData" />
+        <el-button icon="Refresh" size="small" circle @click="loadData" />
       </div>
     </div>
 

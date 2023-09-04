@@ -32,7 +32,6 @@ public class MenuTreeRespDTO implements Serializable {
     @Dict(dicCode = "menu_type")
     @ApiModelProperty(value = "1菜单2功能", required=true)
     private Integer menuType;
-    private String menuType_dictText;
 
     @ApiModelProperty(value = "权限标识")
     private String permissionTag;

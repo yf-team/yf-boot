@@ -25,7 +25,7 @@ public class UserExportDTO {
     @ExcelField(title="姓名", sort=2)
     private String realName;
 
-    @ExcelField(title="部门", sort=3, dictTable = "sys_depart", dicText = "dept_name", dictCode = "dept_code")
+    @ExcelField(title="部门", sort=3, dictTable = "el_sys_depart", dicText = "dept_name", dictCode = "dept_code")
     private String deptCode;
 
     @ExcelField(title="手机", sort=4)
@@ -36,9 +36,6 @@ public class UserExportDTO {
 
     @ExcelField(title="身份证号", sort=6)
     private String idCard;
-
-    @ExcelField(title="积分", sort=7)
-    private Integer points;
 
     @ExcelField(title="角色", sort=8)
     private String roleIds;

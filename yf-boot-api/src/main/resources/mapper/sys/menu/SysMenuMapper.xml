@@ -22,12 +22,11 @@
         <result column="update_time" property="updateTime" />
         <result column="create_by" property="createBy" />
         <result column="update_by" property="updateBy" />
-        <result column="data_flag" property="dataFlag" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        `id`,`parent_id`,`menu_type`,`permission_tag`,`path`,`component`,`redirect`,`name`,`meta_title`,`meta_icon`,`meta_active_menu`,`meta_no_cache`,`hidden`,`sort`,`create_time`,`update_time`,`create_by`,`update_by`,`data_flag`
+        `id`,`parent_id`,`menu_type`,`permission_tag`,`path`,`component`,`redirect`,`name`,`meta_title`,`meta_icon`,`meta_active_menu`,`meta_no_cache`,`hidden`,`sort`,`create_time`,`update_time`,`create_by`,`update_by`
     </sql>
 
 
@@ -51,11 +50,11 @@
 
 
     <select id="listTree" resultMap="MenuTreeMap">
-        SELECT * FROM sys_menu WHERE parent_id=0 ORDER BY sort ASC
+        SELECT * FROM el_sys_menu WHERE parent_id=0 ORDER BY sort ASC
     </select>
 
     <select id="listChildren" resultMap="MenuTreeMap">
-        SELECT * FROM sys_menu WHERE parent_id=#{id} ORDER BY sort ASC
+        SELECT * FROM el_sys_menu WHERE parent_id=#{id} ORDER BY sort ASC
     </select>
 
 
@@ -79,26 +78,26 @@
     </resultMap>
 
     <select id="listMenuByRoles" resultMap="RouteResultMap">
-        SELECT mu.* FROM sys_role_menu rm
-        LEFT JOIN sys_menu mu ON rm.menu_id=mu.id
+        SELECT mu.* FROM el_sys_role_menu rm
+        LEFT JOIN el_sys_menu mu ON rm.menu_id=mu.id
         WHERE mu.menu_type!=3 AND rm.role_id IN
         <foreach item="role" collection="roleIds" separator="," open="(" close=")">'${role}'</foreach>
     </select>
 
     <select id="listPermissionByRoles" resultType="String">
-        SELECT mu.permission_tag FROM sys_role_menu rm
-        LEFT JOIN sys_menu mu ON rm.menu_id=mu.id
+        SELECT mu.permission_tag FROM el_sys_role_menu rm
+        LEFT JOIN el_sys_menu mu ON rm.menu_id=mu.id
         WHERE mu.permission_tag IS NOT NULL AND rm.role_id IN
         <foreach item="role" collection="roleIds" separator="," open="(" close=")">'${role}'</foreach>
     </select>
 
 
     <select id="findMaxSort" resultType="int">
-        SELECT IFNULL(MAX(sort),0) FROM sys_menu WHERE parent_id=#{parentId}
+        SELECT IFNULL(MAX(sort),0) FROM el_sys_menu WHERE parent_id=#{parentId}
     </select>
 
     <update id="incrSort">
-        UPDATE sys_menu SET sort=sort+1 WHERE parent_id=#{parentId} AND sort>=#{start}
+        UPDATE el_sys_menu SET sort=sort+1 WHERE parent_id=#{parentId} AND sort>=#{start}
     </update>
 
 

@@ -18,7 +18,7 @@ import java.util.Date;
 * @since 2020-09-02 17:25
 */
 @Data
-@TableName("sys_depart")
+@TableName("el_sys_depart")
 public class SysDepart extends Model<SysDepart> {
 
     private static final long serialVersionUID = 1L;
@@ -87,11 +87,5 @@ public class SysDepart extends Model<SysDepart> {
      */
     @TableField("update_by")
     private String updateBy;
-
-    /**
-     * 数据标识
-     */
-    @TableField("data_flag")
-    private Integer dataFlag;
 
 }
