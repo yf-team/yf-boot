@@ -1,6 +1,6 @@
 import router from './router'
 import { useAppStoreWithOut } from '@/store/modules/app'
-import { useCache } from '@/hooks/web/useCache'
+import { useStorage } from '@/hooks/web/useStorage'
 import type { RouteRecordRaw } from 'vue-router'
 import { useTitle } from '@/hooks/web/useTitle'
 import { useNProgress } from '@/hooks/web/useNProgress'
@@ -12,7 +12,7 @@ const permissionStore = usePermissionStoreWithOut()
 
 const appStore = useAppStoreWithOut()
 
-const { wsCache } = useCache()
+const { getStorage } = useStorage()
 
 const { start, done } = useNProgress()
 
@@ -21,17 +21,17 @@ const { loadStart, loadDone } = usePageLoading()
 const whiteList = ['/login'] // 不重定向白名单
 
 router.beforeEach(async (to, from, next) => {
-  console.log('++++加载...')
+  start()
+  loadStart()
 
   // 获取网站基本信息
   if (!appStore.getSiteInfo || !appStore.getSiteInfo.id) {
-    await fetchSteInfo().then((res) => {
+    await fetchSteInfo({}).then((res) => {
+      console.log('数据呢？', res)
       appStore.setSiteInfo(res.data)
     })
   }
 
-  start()
-  loadStart()
   if (appStore.getUserInfo && appStore.getUserInfo.token) {
     if (to.path === '/login') {
       next({ path: '/' })
@@ -41,9 +41,9 @@ router.beforeEach(async (to, from, next) => {
         return
       }
 
-      // 构建路由信息
-      const roleRouters = wsCache.get('roleRouters') || []
-      await permissionStore.generateRoutes('admin', roleRouters as AppCustomRouteRecordRaw[])
+      // 开发者可根据实际情况进行修改
+      const roleRouters = getStorage('roleRouters') || []
+      await permissionStore.generateRoutes('server', roleRouters as AppCustomRouteRecordRaw[])
 
       permissionStore.getAddRouters.forEach((route) => {
         router.addRoute(route as unknown as RouteRecordRaw) // 动态添加可访问路由表

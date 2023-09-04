@@ -9,14 +9,14 @@ const prefixCls = getPrefixCls('footer')
 
 const appStore = useAppStore()
 
-const title = computed(() => appStore.getTitle)
+const siteInfo = computed(() => appStore.getSiteInfo)
 </script>
 
 <template>
   <div
     :class="prefixCls"
-    class="text-center text-[var(--el-text-color-placeholder)] bg-[var(--app-contnet-bg-color)] h-[var(--app-footer-height)] leading-[var(--app-footer-height)] dark:bg-[var(--el-bg-color)]"
+    class="text-center text-[var(--el-text-color-placeholder)] bg-[var(--app-content-bg-color)] h-[var(--app-footer-height)] leading-[var(--app-footer-height)] dark:bg-[var(--el-bg-color)]"
   >
-    ©2022 {{ title }}
+    Copyright ©2023 {{ siteInfo.siteName }}
   </div>
 </template>

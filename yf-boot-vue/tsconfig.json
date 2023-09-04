@@ -2,16 +2,15 @@
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
-    "module": "es2020",
+    "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
-    "strictNullChecks": false, // 忽略null赋值
     "jsx": "preserve",
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
-    "baseUrl": ".",
+    "baseUrl": "./",
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
@@ -25,16 +24,13 @@
       "@/*": ["src/*"]
     },
     "types": [
-      "@intlify/vite-plugin-vue-i18n/client",
+      "@intlify/unplugin-vue-i18n/types",
       "vite/client",
       "element-plus/global",
-      "@types/intro.js",
       "@types/qrcode",
-      "vite-plugin-svg-icons/client",
-      "unplugin-vue-define-options"
-    ],
-    "typeRoots": ["./node_modules/@types/", "./types"]
+      "vite-plugin-svg-icons/client"
+    ]
   },
-  "include": ["src/**/*", "types/**/*.d.ts", "mock/**/*.ts"],
-  "exclude": ["dist", "node_modules"]
+  "include": ["src", "types/**/*.d.ts", "mock/**/*.ts"]
+  // "exclude": ["dist", "node_modules"]
 }

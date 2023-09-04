@@ -1,17 +1,22 @@
-<script setup lang="ts">
-import { reactive, ref, unref, watch } from 'vue'
-import { Form } from '@/components/Form'
+<script setup lang="tsx">
+import { reactive, ref, watch } from 'vue'
+import { Form, FormSchema } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElButton, ElCheckbox, ElLink } from 'element-plus'
-import { required } from '@/utils/formRules'
 import { useForm } from '@/hooks/web/useForm'
 import { loginApi, routesApi } from '@/api/login'
-import type { UserLoginType } from '@/api/login/types'
-import { useCache } from '@/hooks/web/useCache'
+import { useStorage } from '@/hooks/web/useStorage'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
+import { UserType } from '@/api/login/types'
+import { useValidator } from '@/hooks/web/useValidator'
+import { Icon } from '@/components/Icon'
+
+const { required } = useValidator()
+
+const emit = defineEmits(['to-register'])
 
 const appStore = useAppStore()
 
@@ -19,11 +24,13 @@ const permissionStore = usePermissionStore()
 
 const { currentRoute, addRoute, push } = useRouter()
 
+const { setStorage } = useStorage()
+
 const { t } = useI18n()
 
 const rules = {
-  username: [required],
-  password: [required]
+  username: [required()],
+  password: [required()]
 }
 
 const schema = reactive<FormSchema[]>([
@@ -31,6 +38,13 @@ const schema = reactive<FormSchema[]>([
     field: 'title',
     colProps: {
       span: 24
+    },
+    formItemProps: {
+      slots: {
+        default: () => {
+          return <h2 class="text-2xl font-bold text-center w-[100%]">{t('login.login')}</h2>
+        }
+      }
     }
   },
   {
@@ -64,12 +78,48 @@ const schema = reactive<FormSchema[]>([
     field: 'tool',
     colProps: {
       span: 24
+    },
+    formItemProps: {
+      slots: {
+        default: () => {
+          return (
+            <>
+              <div class="flex justify-between items-center w-[100%]">
+                <ElCheckbox v-model={remember.value} label={t('login.remember')} size="small" />
+                <ElLink type="primary" underline={false}>
+                  {t('login.forgetPassword')}
+                </ElLink>
+              </div>
+            </>
+          )
+        }
+      }
     }
   },
   {
     field: 'login',
     colProps: {
       span: 24
+    },
+    formItemProps: {
+      slots: {
+        default: () => {
+          return (
+            <>
+              <div class="w-[100%]">
+                <ElButton loading={loading.value} type="primary" class="w-[100%]" onClick={signIn}>
+                  {t('login.login')}
+                </ElButton>
+              </div>
+              <div class="w-[100%] mt-15px">
+                <ElButton class="w-[100%]" onClick={toRegister}>
+                  {t('login.register')}
+                </ElButton>
+              </div>
+            </>
+          )
+        }
+      }
     }
   },
   {
@@ -84,6 +134,46 @@ const schema = reactive<FormSchema[]>([
     field: 'otherIcon',
     colProps: {
       span: 24
+    },
+    formItemProps: {
+      slots: {
+        default: () => {
+          return (
+            <>
+              <div class="flex justify-between w-[100%]">
+                <Icon
+                  icon="ant-design:github-filled"
+                  size={iconSize}
+                  class="cursor-pointer ant-icon"
+                  color={iconColor}
+                  hoverColor={hoverColor}
+                />
+                <Icon
+                  icon="ant-design:wechat-filled"
+                  size={iconSize}
+                  class="cursor-pointer ant-icon"
+                  color={iconColor}
+                  hoverColor={hoverColor}
+                />
+                <Icon
+                  icon="ant-design:alipay-circle-filled"
+                  size={iconSize}
+                  color={iconColor}
+                  hoverColor={hoverColor}
+                  class="cursor-pointer ant-icon"
+                />
+                <Icon
+                  icon="ant-design:weibo-circle-filled"
+                  size={iconSize}
+                  color={iconColor}
+                  hoverColor={hoverColor}
+                  class="cursor-pointer ant-icon"
+                />
+              </div>
+            </>
+          )
+        }
+      }
     }
   }
 ])
@@ -92,11 +182,14 @@ const iconSize = 30
 
 const remember = ref(false)
 
-const { register, elFormRef, methods } = useForm()
+const { formRegister, formMethods } = useForm()
+const { getFormData, getElFormExpose } = formMethods
 
 const loading = ref(false)
 
 const iconColor = '#999'
+
+const hoverColor = 'var(--el-color-primary)'
 
 const redirect = ref<string>('')
 
@@ -112,34 +205,34 @@ watch(
 
 // 登录
 const signIn = async () => {
-  const formRef = unref(elFormRef)
+  const formRef = await getElFormExpose()
   await formRef?.validate(async (isValid) => {
     if (isValid) {
       loading.value = true
-      const { getFormData } = methods
-      const formData = await getFormData<UserLoginType>()
+      const formData = await getFormData<UserType>()
 
-      const res = await loginApi(formData)
-        .catch(() => {})
-        .finally(() => (loading.value = false))
-
-      if (res) {
-        appStore.setUserInfo(res.data)
-        getRole()
+      try {
+        const res = await loginApi(formData)
+        if (res) {
+          appStore.setUserInfo(res.data)
+          getRole()
+        }
+      } finally {
+        loading.value = false
       }
     }
   })
 }
 
-// 获取角色信息
+// 获取角色及菜单
 const getRole = async () => {
   const res = await routesApi({})
   if (res) {
-    const { wsCache } = useCache()
     const routers = res.data || []
-    wsCache.set('roleRouters', routers)
+    setStorage('roleRouters', routers)
 
-    await permissionStore.generateRoutes('admin', routers).catch(() => {})
+    // 固定使用服务端方式
+    await permissionStore.generateRoutes('server', routers).catch(() => {})
 
     permissionStore.getAddRouters.forEach((route) => {
       addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
@@ -147,6 +240,11 @@ const getRole = async () => {
     permissionStore.setIsAddRouters(true)
     push({ path: redirect.value || permissionStore.addRouters[0].path })
   }
+}
+
+// 去注册页面
+const toRegister = () => {
+  emit('to-register')
 }
 </script>
 
@@ -157,60 +255,7 @@ const getRole = async () => {
     label-position="top"
     hide-required-asterisk
     size="large"
-    @register="register"
-  >
-    <template #title>
-      <h2 class="text-2xl font-bold text-center w-[100%]">{{ t('login.login') }}</h2>
-    </template>
-
-    <template #tool>
-      <div class="flex justify-between items-center w-[100%]">
-        <ElCheckbox v-model="remember" :label="t('login.remember')" size="small" />
-        <ElLink type="primary" :underline="false">{{ t('login.forgetPassword') }}</ElLink>
-      </div>
-    </template>
-
-    <template #login>
-      <ElButton :loading="loading" type="primary" class="w-[100%]" @click="signIn">
-        {{ t('login.login') }}
-      </ElButton>
-    </template>
-
-    <template #otherIcon>
-      <div class="flex justify-between w-[100%]">
-        <Icon
-          icon="ant-design:github-filled"
-          :size="iconSize"
-          class="cursor-pointer anticon"
-          :color="iconColor"
-        />
-        <Icon
-          icon="ant-design:wechat-filled"
-          :size="iconSize"
-          class="cursor-pointer anticon"
-          :color="iconColor"
-        />
-        <Icon
-          icon="ant-design:alipay-circle-filled"
-          :size="iconSize"
-          :color="iconColor"
-          class="cursor-pointer anticon"
-        />
-        <Icon
-          icon="ant-design:weibo-circle-filled"
-          :size="iconSize"
-          :color="iconColor"
-          class="cursor-pointer anticon"
-        />
-      </div>
-    </template>
-  </Form>
+    class="dark:(border-1 border-[var(--el-border-color)] border-solid)"
+    @register="formRegister"
+  />
 </template>
-
-<style lang="less" scoped>
-:deep(.anticon) {
-  &:hover {
-    color: var(--el-color-primary) !important;
-  }
-}
-</style>

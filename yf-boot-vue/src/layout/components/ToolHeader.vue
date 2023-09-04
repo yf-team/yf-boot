@@ -48,25 +48,25 @@ export default defineComponent({
         {layout.value !== 'top' ? (
           <div class="h-full flex items-center">
             {hamburger.value && layout.value !== 'cutMenu' ? (
-              <Collapse class="hover-tigger" color="var(--top-header-text-color)"></Collapse>
+              <Collapse class="custom-hover" color="var(--top-header-text-color)"></Collapse>
             ) : undefined}
             {breadcrumb.value ? <Breadcrumb class="<md:hidden"></Breadcrumb> : undefined}
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
           {screenfull.value ? (
-            <Screenfull class="hover-tigger" color="var(--top-header-text-color)"></Screenfull>
+            <Screenfull class="custom-hover" color="var(--top-header-text-color)"></Screenfull>
           ) : undefined}
           {size.value ? (
-            <SizeDropdown class="hover-tigger" color="var(--top-header-text-color)"></SizeDropdown>
+            <SizeDropdown class="custom-hover" color="var(--top-header-text-color)"></SizeDropdown>
           ) : undefined}
           {locale.value ? (
             <LocaleDropdown
-              class="hover-tigger"
+              class="custom-hover"
               color="var(--top-header-text-color)"
             ></LocaleDropdown>
           ) : undefined}
-          <UserInfo class="hover-tigger"></UserInfo>
+          <UserInfo></UserInfo>
         </div>
       </div>
     )

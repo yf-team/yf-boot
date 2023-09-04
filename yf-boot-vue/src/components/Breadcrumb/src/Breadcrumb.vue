@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router'
 import { usePermissionStore } from '@/store/modules/permission'
 import { filterBreadcrumb } from './helper'
 import { filter, treeToList } from '@/utils/tree'
-import type { RouteLocationNormalizedLoaded, RouteMeta } from 'vue-router'
+import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Icon } from '@/components/Icon'
 import { useAppStore } from '@/store/modules/app'
@@ -37,8 +37,7 @@ export default defineComponent({
     })
 
     const getBreadcrumb = () => {
-      const currentPath = currentRoute.value.path
-
+      const currentPath = currentRoute.value.matched.slice(-1)[0].path
       levelList.value = filter<AppRouteRecordRaw>(unref(menuRouters), (node: AppRouteRecordRaw) => {
         return node.path === currentPath
       })
@@ -47,16 +46,16 @@ export default defineComponent({
     const renderBreadcrumb = () => {
       const breadcrumbList = treeToList<AppRouteRecordRaw[]>(unref(levelList))
       return breadcrumbList.map((v) => {
-        const disabled = v.redirect === 'noredirect'
-        const meta = v.meta as RouteMeta
+        const disabled = !v.redirect || v.redirect === 'noredirect'
+        const meta = v.meta
         return (
           <ElBreadcrumbItem to={{ path: disabled ? '' : v.path }} key={v.name}>
             {meta?.icon && breadcrumbIcon.value ? (
               <>
-                <Icon icon={meta.icon} class="mr-[5px]"></Icon> {t(v?.meta?.title)}
+                <Icon icon={meta.icon} class="mr-[5px]"></Icon> {t(v?.meta?.title || '')}
               </>
             ) : (
-              t(v?.meta?.title)
+              t(v?.meta?.title || '')
             )}
           </ElBreadcrumbItem>
         )

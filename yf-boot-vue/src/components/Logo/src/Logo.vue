@@ -11,11 +11,11 @@ const appStore = useAppStore()
 
 const show = ref(true)
 
-const title = computed(() => appStore.getTitle)
-
 const layout = computed(() => appStore.getLayout)
 
 const collapse = computed(() => appStore.getCollapse)
+
+const siteInfo = computed(() => appStore.getSiteInfo)
 
 onMounted(() => {
   if (unref(collapse)) show.value = false
@@ -55,30 +55,32 @@ watch(
 </script>
 
 <template>
-  <router-link
-    :class="[
-      prefixCls,
-      layout !== 'classic' ? `${prefixCls}__Top` : '',
-      'flex !h-[var(--logo-height)] items-center cursor-pointer pl-8px relative'
-    ]"
-    to="/"
-  >
-    <img
-      src="https://files.yfhl.net/2022/11/21/1669011274378-914f43d8.png"
-      class="w-[calc(var(--logo-height)-20px)] h-[calc(var(--logo-height)-20px)]"
-    />
-    <div
-      v-if="show"
+  <div>
+    <router-link
       :class="[
-        'ml-10px text-16px font-700',
-        {
-          'text-[var(--logo-title-text-color)]': layout === 'classic',
-          'text-[var(--top-header-text-color)]':
-            layout === 'topLeft' || layout === 'top' || layout === 'cutMenu'
-        }
+        prefixCls,
+        layout !== 'classic' ? `${prefixCls}__Top` : '',
+        'flex !h-[var(--logo-height)] items-center cursor-pointer pl-8px relative decoration-none overflow-hidden'
       ]"
+      to="/"
     >
-      {{ title }}
-    </div>
-  </router-link>
+      <img
+        :src="siteInfo.backLogo"
+        class="w-[calc(var(--logo-height)-10px)] h-[calc(var(--logo-height)-10px)]"
+      />
+      <div
+        v-if="show"
+        :class="[
+          'ml-10px text-16px font-700',
+          {
+            'text-[var(--logo-title-text-color)]': layout === 'classic',
+            'text-[var(--top-header-text-color)]':
+              layout === 'topLeft' || layout === 'top' || layout === 'cutMenu'
+          }
+        ]"
+      >
+        {{ siteInfo.siteName }}
+      </div>
+    </router-link>
+  </div>
 </template>

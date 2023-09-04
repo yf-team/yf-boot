@@ -17,7 +17,7 @@
       </div>
 
       <div class="opt-box-right">
-        <el-button icon="Refresh" size="small" circle @click="loadData" />
+        <el-button :icon="Refresh" size="small" circle @click="loadData" />
       </div>
     </div>
 
@@ -190,7 +190,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessageBox, ElMessage, ElTree } from 'element-plus'
 import type { MenuDataType } from './types'
 import type Node from 'element-plus/es/components/tree/src/model/node'
-import type { DropType } from 'element-plus/es/components/tree/src/tree.type'
+import type { AllowDropType } from 'element-plus/es/components/tree/src/tree.type'
 
 // 页面参数
 const records = ref([])
@@ -379,7 +379,7 @@ const batchEdit = () => {
   handleEdit(row)
 }
 
-const allowDrop = (draggingNode: Node, dropNode: Node, type: DropType) => {
+const allowDrop = (draggingNode: Node, dropNode: Node, type: AllowDropType) => {
   // 跨菜单移动功能，意义不大
   if (draggingNode.data.menuType === 3 && draggingNode.data.parentId !== dropNode.data.parentId) {
     return false

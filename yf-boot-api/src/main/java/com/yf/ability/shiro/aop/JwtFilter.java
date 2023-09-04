@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -51,6 +52,10 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 		//这几句代码是关键
 		if (CROSS_OPTIONS.equals(request.getMethod())){
 			response.setStatus(HttpStatus.SC_NO_CONTENT);
+			response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+			response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+			response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "*");
+			response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "*");
 			log.info("++++++++++放行options请求");
 			return true;
 		}

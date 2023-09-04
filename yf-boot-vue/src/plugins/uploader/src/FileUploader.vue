@@ -37,7 +37,6 @@
 </template>
 <script lang="ts" setup>
 import { nextTick, ref, watch } from 'vue'
-import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
 
 import type {
   UploadFile,
@@ -116,18 +115,18 @@ const handleDownload = (file: UploadFile) => {
 </script>
 
 <style scoped>
-/deep/ .el-upload-list--picture-card {
+:deep(.el-upload-list--picture-card) {
   --el-upload-list-picture-card-size: 80px;
   display: inline-flex;
   flex-wrap: wrap;
   margin: 0;
 }
 
-/deep/ .el-upload--picture-card {
+:deep(.el-upload--picture-card) {
   --el-upload-picture-card-size: 80px;
 }
 
-/deep/ .el-upload-list--picture-card .el-upload-list__item-actions {
+:deep(.el-upload-list--picture-card .el-upload-list__item-actions) {
   font-size: 16px;
 }
 </style>

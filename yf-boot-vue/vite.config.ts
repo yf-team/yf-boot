@@ -2,16 +2,15 @@ import { resolve } from 'path'
 import { loadEnv } from 'vite'
 import type { UserConfig, ConfigEnv } from 'vite'
 import Vue from '@vitejs/plugin-vue'
-import WindiCSS from 'vite-plugin-windicss'
 import VueJsx from '@vitejs/plugin-vue-jsx'
+import progress from 'vite-plugin-progress'
 import EslintPlugin from 'vite-plugin-eslint'
-import VueI18n from '@intlify/vite-plugin-vue-i18n'
-import styleImport, { ElementPlusResolve } from 'vite-plugin-style-import'
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import { ViteEjsPlugin } from "vite-plugin-ejs"
 import PurgeIcons from 'vite-plugin-purge-icons'
-import { viteMockServe } from 'vite-plugin-mock'
-import DefineOptions from 'unplugin-vue-define-options/vite'
-import { createHtmlPlugin } from 'vite-plugin-html'
+import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite"
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-import'
+import UnoCSS from 'unocss/vite'
 
 // https://vitejs.dev/config/
 const root = process.cwd()
@@ -20,10 +19,8 @@ function pathResolve(dir: string) {
   return resolve(root, '.', dir)
 }
 
-
-// https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfig => {
-  let env = null
+  let env = {} as any
   const isBuild = command === 'build'
   if (!isBuild) {
     env = loadEnv((process.argv[3] === '--mode' ? process.argv[4] : process.argv[3]), root)
@@ -33,16 +30,24 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
   return {
     base: env.VITE_BASE_PATH,
     plugins: [
-      Vue(),
+      Vue({
+        script: {
+          // 开启defineModel
+          defineModel: true
+        }
+      }),
       VueJsx(),
-      WindiCSS(),
-      styleImport({
+      progress(),
+      createStyleImportPlugin({
         resolves: [ElementPlusResolve()],
         libs: [{
           libraryName: 'element-plus',
           esModule: true,
           resolveStyle: (name) => {
-            return `element-plus/es/components/${name.substring(3)}/style/css`
+            if (name === 'click-outside') {
+              return ''
+            }
+            return `element-plus/es/components/${name.replace(/^el-/, '')}/style/css`
           }
         }]
       }),
@@ -50,7 +55,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         cache: false,
         include: ['src/**/*.vue', 'src/**/*.ts', 'src/**/*.tsx'] // 检查的文件
       }),
-      VueI18n({
+      VueI18nPlugin({
         runtimeOnly: true,
         compositionOnly: true,
         include: [resolve(__dirname, 'src/locales/**')]
@@ -61,26 +66,11 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         svgoOptions: true
       }),
       PurgeIcons(),
-      viteMockServe({
-        ignore: /^\_/,
-        mockPath: 'mock',
-        localEnabled: !isBuild,
-        prodEnabled: isBuild,
-        injectCode: `
-          import { setupProdMockServer } from '../mock/_createProductionServer'
-
-          setupProdMockServer()
-          `
+      ViteEjsPlugin({
+        title: env.VITE_APP_TITLE
       }),
-      DefineOptions(),
-      createHtmlPlugin({
-        inject: {
-          data: {
-            title: env.VITE_APP_TITLE,
-            injectScript: `<script src="./inject.js"></script>`,
-          }
-        }
-      })
+      UnoCSS(),
+      // sveltekit(),
     ],
 
     css: {
@@ -108,7 +98,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       minify: 'terser',
       outDir: env.VITE_OUT_DIR || 'dist',
       sourcemap: env.VITE_SOURCEMAP === 'true' ? 'inline' : false,
-      brotliSize: false,
+      // brotliSize: false,
       terserOptions: {
         compress: {
           drop_debugger: env.VITE_DROP_DEBUGGER === 'true',
@@ -117,14 +107,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       }
     },
     server: {
-      proxy: {
-        // 选项写法
-        // '/api': {
-        //   target: 'http://localhost:3000',
-        //   changeOrigin: true,
-        //   rewrite: path => path.replace(/^\/api/, '')
-        // }
-      },
+      port: 5000,
       hmr: {
         overlay: false
       },
@@ -140,7 +123,14 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         '@iconify/iconify',
         '@vueuse/core',
         'axios',
-        'qs'
+        'qs',
+        'echarts',
+        'echarts-wordcloud',
+        'intro.js',
+        'qrcode',
+        '@wangeditor/editor',
+        '@wangeditor/editor-for-vue',
+        'vue-json-pretty'
       ]
     }
   }

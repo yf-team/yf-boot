@@ -56,7 +56,7 @@ public class SysUserLoginDTO implements Serializable {
     @ApiModelProperty(value = "权限级别", required=true)
     private Integer roleLevel;
 
-    @Dict(dictTable = "el_sys_depart", dicCode = "dept_code", dicText = "dept_name")
+    @Dict(dictTable = "sys_depart", dicCode = "dept_code", dicText = "dept_name")
     @ApiModelProperty(value = "部门编码", required=true)
     private String deptCode;
 

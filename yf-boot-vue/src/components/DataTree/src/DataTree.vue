@@ -118,9 +118,7 @@ import { Icon } from '@/components/Icon'
 import type Node from 'element-plus/es/components/tree/src/model/node'
 import type { DropType } from 'element-plus/es/components/tree/src/tree.type'
 import type { TreeColumnType } from './types'
-import { useAxios } from '@/hooks/web/useAxios'
-
-const request = useAxios()
+import request from '@/config/axios'
 
 // 事件定义
 const emit = defineEmits(['onAdd', 'onEdit', 'onDelete', 'onBatch'])

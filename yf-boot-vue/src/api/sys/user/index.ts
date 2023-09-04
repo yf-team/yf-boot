@@ -1,6 +1,4 @@
-import { useAxios } from '@/hooks/web/useAxios'
-
-const request = useAxios()
+import request from '@/config/axios'
 
 export const saveApi = (data: any) => {
   return request.post({

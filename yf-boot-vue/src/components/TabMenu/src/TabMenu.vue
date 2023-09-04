@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { usePermissionStore } from '@/store/modules/permission'
 import { useAppStore } from '@/store/modules/app'
-import { computed, unref, defineComponent, watch, ref } from 'vue'
+import { computed, unref, defineComponent, watch, ref, onMounted } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElScrollbar } from 'element-plus'
 import { Icon } from '@/components/Icon'
@@ -28,6 +28,8 @@ export default defineComponent({
 
     const collapse = computed(() => appStore.getCollapse)
 
+    const fixedMenu = computed(() => appStore.getFixedMenu)
+
     const permissionStore = usePermissionStore()
 
     const routers = computed(() => permissionStore.getRouters)
@@ -37,6 +39,27 @@ export default defineComponent({
     const setCollapse = () => {
       appStore.setCollapse(!unref(collapse))
     }
+
+    onMounted(() => {
+      if (unref(fixedMenu)) {
+        const path = `/${unref(currentRoute).path.split('/')[1]}`
+        const children = unref(tabRouters).find(
+          (v) =>
+            (v.meta?.alwaysShow || (v?.children?.length && v?.children?.length > 1)) &&
+            v.path === path
+        )?.children
+
+        tabActive.value = path
+        if (children) {
+          permissionStore.setMenuTabRouters(
+            cloneDeep(children).map((v) => {
+              v.path = pathResolve(unref(tabActive), v.path)
+              return v
+            })
+          )
+        }
+      }
+    })
 
     watch(
       () => routers.value,
@@ -66,7 +89,7 @@ export default defineComponent({
     )
 
     // 是否显示菜单
-    const showMenu = ref(false)
+    const showMenu = ref(unref(fixedMenu) ? true : false)
 
     // tab高亮
     const tabActive = ref('')
@@ -77,9 +100,14 @@ export default defineComponent({
         window.open(item.path)
         return
       }
+      const newPath = item.children ? item.path : item.path.split('/')[0]
+      const oldPath = unref(tabActive)
       tabActive.value = item.children ? item.path : item.path.split('/')[0]
       if (item.children) {
-        showMenu.value = !unref(showMenu)
+        if (newPath === oldPath || !unref(showMenu)) {
+          // showMenu.value = unref(fixedMenu) ? true : !unref(showMenu)
+          showMenu.value = !unref(showMenu)
+        }
         if (unref(showMenu)) {
           permissionStore.setMenuTabRouters(
             cloneDeep(item.children).map((v) => {
@@ -96,7 +124,7 @@ export default defineComponent({
     }
 
     // 设置高亮
-    const isActice = (currentPath: string) => {
+    const isActive = (currentPath: string) => {
       const { path } = unref(currentRoute)
       if (tabPathMap[currentPath].includes(path)) {
         return true
@@ -104,23 +132,17 @@ export default defineComponent({
       return false
     }
 
-    const mouseleave = () => {
-      if (!unref(showMenu)) return
-      showMenu.value = false
-    }
-
     return () => (
       <div
         id={`${variables.namespace}-menu`}
         class={[
           prefixCls,
-          'relative bg-[var(--left-menu-bg-color)] top-1px',
+          'relative bg-[var(--left-menu-bg-color)] top-1px layout-border__right',
           {
             'w-[var(--tab-menu-max-width)]': !unref(collapse),
             'w-[var(--tab-menu-min-width)]': unref(collapse)
           }
         ]}
-        onMouseleave={mouseleave}
       >
         <ElScrollbar class="!h-[calc(100%-var(--tab-menu-collapse-height)-1px)]">
           <div>
@@ -140,7 +162,7 @@ export default defineComponent({
                       `${prefixCls}__item`,
                       'text-center text-12px relative py-12px cursor-pointer',
                       {
-                        'is-active': isActice(v.path)
+                        'is-active': isActive(v.path)
                       }
                     ]}
                     onClick={() => {
@@ -151,7 +173,7 @@ export default defineComponent({
                       <Icon icon={item?.meta?.icon}></Icon>
                     </div>
                     {!unref(showTitle) ? undefined : (
-                      <p class="break-words mt-5px px-2px">{t(item.meta?.title)}</p>
+                      <p class="break-words mt-5px px-2px">{t(item.meta?.title || '')}</p>
                     )}
                   </div>
                 )
@@ -170,12 +192,12 @@ export default defineComponent({
         </div>
         <Menu
           class={[
-            '!absolute top-0 border-left-1 border-solid border-[var(--left-menu-bg-light-color)]',
+            '!absolute top-0 z-4000',
             {
               '!left-[var(--tab-menu-min-width)]': unref(collapse),
               '!left-[var(--tab-menu-max-width)]': !unref(collapse),
-              '!w-[calc(var(--left-menu-max-width)+1px)]': unref(showMenu),
-              '!w-0': !unref(showMenu)
+              '!w-[var(--left-menu-max-width)]': unref(showMenu) || unref(fixedMenu),
+              '!w-0': !unref(showMenu) && !unref(fixedMenu)
             }
           ]}
           style="transition: width var(--transition-time-02), left var(--transition-time-02);"
@@ -192,16 +214,6 @@ export default defineComponent({
 .@{prefix-cls} {
   transition: all var(--transition-time-02);
 
-  &:after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 1px;
-    height: 100%;
-    border-left: 1px solid var(--left-menu-border-color);
-    content: '';
-  }
-
   &__item {
     color: var(--left-menu-text-color);
     transition: all var(--transition-time-02);
@@ -215,7 +227,6 @@ export default defineComponent({
   &--collapse {
     color: var(--left-menu-text-color);
     background-color: var(--left-menu-bg-light-color);
-    border-top: 1px solid var(--left-menu-border-color);
   }
 
   .is-active {

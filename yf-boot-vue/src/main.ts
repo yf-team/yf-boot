@@ -1,5 +1,5 @@
 // 引入windi css
-import '@/plugins/windi.css'
+import '@/plugins/unocss'
 
 // 导入全局的svg图标
 import '@/plugins/svgIcon'
@@ -13,14 +13,8 @@ import { setupStore } from '@/store'
 // 全局组件
 import { setupGlobCom } from '@/components'
 
-// 全局权限指令
-import { setupPermission } from '@/directive/permission'
-
 // 引入element-plus
 import { setupElementPlus } from '@/plugins/elementPlus'
-
-// 导入图标
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 // 引入全局样式
 import '@/styles/index.less'
@@ -31,31 +25,30 @@ import '@/plugins/animate.css'
 // 路由
 import { setupRouter } from './router'
 
+// 权限
+import { setupPermission } from './directives'
+
 import { createApp } from 'vue'
 
 import App from './App.vue'
 
 import './permission'
 
+// 创建实例
 const setupAll = async () => {
   const app = createApp(App)
 
   await setupI18n(app)
 
-  for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    // @ts-ignore
-    app.component(key, component)
-  }
-
   setupStore(app)
 
   setupGlobCom(app)
 
-  setupPermission(app)
-
   setupElementPlus(app)
 
   setupRouter(app)
+
+  setupPermission(app)
 
   app.mount('#app')
 }

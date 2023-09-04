@@ -105,7 +105,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useAxios } from '@/hooks/web/useAxios'
+import request from '@/config/axios'
 import { onMounted, toRefs, PropType, ref, unref } from 'vue'
 import { OptionsType, BatchType, TableQueryType } from './types'
 import { ElMessageBox, ElMessage } from 'element-plus'
@@ -117,9 +117,6 @@ const total = ref(0)
 const loading = ref(false)
 const selectedIds = ref([] as any[])
 const selectedRow = ref({})
-
-// 数据请求
-const request = useAxios()
 
 // 表格参数
 const props = defineProps({

@@ -4,13 +4,12 @@ import { useAppStoreWithOut } from '@/store/modules/app'
 import { useI18n } from '@/hooks/web/useI18n'
 
 const appStore = useAppStoreWithOut()
+const siteInfo = appStore.siteInfo
 
 export const useTitle = (newTitle?: string) => {
   const { t } = useI18n()
   const title = ref(
-    newTitle
-      ? `${appStore.getSiteInfo.siteName} - ${t(newTitle as string)}`
-      : appStore.getSiteInfo.siteName
+    newTitle ? `${siteInfo.siteName} - ${t(newTitle as string)}` : siteInfo.siteName
   )
 
   watch(

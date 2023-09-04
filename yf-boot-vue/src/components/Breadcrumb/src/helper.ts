@@ -1,5 +1,4 @@
 import { pathResolve } from '@/utils/routerHelper'
-import type { RouteMeta } from 'vue-router'
 
 export const filterBreadcrumb = (
   routes: AppRouteRecordRaw[],
@@ -8,8 +7,8 @@ export const filterBreadcrumb = (
   const res: AppRouteRecordRaw[] = []
 
   for (const route of routes) {
-    const meta = route?.meta as RouteMeta
-    if (meta.hidden && !meta.showMainRoute) {
+    const meta = route?.meta
+    if (meta.hidden && !meta.canTo) {
       continue
     }
 

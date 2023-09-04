@@ -10,12 +10,22 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
   {
     path: '/',
     component: Layout,
-    redirect: '/admin/sys/role',
-    name: 'Root',
+    redirect: '/dashboard',
+    name: 'Home',
+    children: [
+      {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/Dashboard/Dashboard.vue'),
+        meta: {}
+      }
+    ],
     meta: {
-      hidden: true
+      hidden: true,
+      noTagsView: true
     }
   },
+
   {
     path: '/redirect',
     component: Layout,

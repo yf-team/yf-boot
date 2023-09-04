@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ElSwitch } from 'element-plus'
+import { ElSwitch, ElMessage } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useAppStore } from '@/store/modules/app'
 import { computed, ref, watch } from 'vue'
+import { setCssVar } from '@/utils'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const { getPrefixCls } = useDesign()
@@ -59,7 +60,16 @@ const localeChange = (show: boolean) => {
 const tagsView = ref(appStore.getTagsView)
 
 const tagsViewChange = (show: boolean) => {
+  // 切换标签栏显示时，同步切换标签栏的高度
+  setCssVar('--tags-view-height', show ? '35px' : '0px')
   appStore.setTagsView(show)
+}
+
+// 标签页图标
+const tagsViewIcon = ref(appStore.getTagsViewIcon)
+
+const tagsViewIconChange = (show: boolean) => {
+  appStore.setTagsViewIcon(show)
 }
 
 // logo
@@ -67,6 +77,13 @@ const logo = ref(appStore.getLogo)
 
 const logoChange = (show: boolean) => {
   appStore.setLogo(show)
+}
+
+// 菜单手风琴
+const uniqueOpened = ref(appStore.getUniqueOpened)
+
+const uniqueOpenedChange = (uniqueOpened: boolean) => {
+  appStore.setUniqueOpened(uniqueOpened)
 }
 
 // 固定头部
@@ -88,6 +105,29 @@ const greyMode = ref(appStore.getGreyMode)
 
 const greyModeChange = (show: boolean) => {
   appStore.setGreyMode(show)
+}
+
+// 动态路由
+const dynamicRouter = ref(appStore.getDynamicRouter)
+
+const dynamicRouterChange = (show: boolean) => {
+  ElMessage.info(t('setting.reExperienced'))
+  appStore.setDynamicRouter(show)
+}
+
+// 服务端动态路由
+const serverDynamicRouter = ref(appStore.getServerDynamicRouter)
+
+const serverDynamicRouterChange = (show: boolean) => {
+  ElMessage.info(t('setting.reExperienced'))
+  appStore.setServerDynamicRouter(show)
+}
+
+// 固定菜单
+const fixedMenu = ref(appStore.getFixedMenu)
+
+const fixedMenuChange = (show: boolean) => {
+  appStore.setFixedMenu(show)
 }
 
 const layout = computed(() => appStore.getLayout)
@@ -140,8 +180,18 @@ watch(
     </div>
 
     <div class="flex justify-between items-center">
+      <span class="text-14px">{{ t('setting.tagsViewIcon') }}</span>
+      <ElSwitch v-model="tagsViewIcon" @change="tagsViewIconChange" />
+    </div>
+
+    <div class="flex justify-between items-center">
       <span class="text-14px">{{ t('setting.logo') }}</span>
       <ElSwitch v-model="logo" @change="logoChange" />
+    </div>
+
+    <div class="flex justify-between items-center">
+      <span class="text-14px">{{ t('setting.uniqueOpened') }}</span>
+      <ElSwitch v-model="uniqueOpened" @change="uniqueOpenedChange" />
     </div>
 
     <div class="flex justify-between items-center">
@@ -157,6 +207,21 @@ watch(
     <div class="flex justify-between items-center">
       <span class="text-14px">{{ t('setting.greyMode') }}</span>
       <ElSwitch v-model="greyMode" @change="greyModeChange" />
+    </div>
+
+    <div class="flex justify-between items-center">
+      <span class="text-14px">{{ t('setting.dynamicRouter') }}</span>
+      <ElSwitch v-model="dynamicRouter" @change="dynamicRouterChange" />
+    </div>
+
+    <div class="flex justify-between items-center">
+      <span class="text-14px">{{ t('setting.serverDynamicRouter') }}</span>
+      <ElSwitch v-model="serverDynamicRouter" @change="serverDynamicRouterChange" />
+    </div>
+
+    <div class="flex justify-between items-center">
+      <span class="text-14px">{{ t('setting.fixedMenu') }}</span>
+      <ElSwitch v-model="fixedMenu" @change="fixedMenuChange" />
     </div>
   </div>
 </template>

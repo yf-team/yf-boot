@@ -1,5 +1,10 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import type { Router, RouteLocationNormalized, RouteRecordNormalized, RouteMeta } from 'vue-router'
+import type {
+  Router,
+  RouteLocationNormalized,
+  RouteRecordNormalized,
+  RouteRecordRaw
+} from 'vue-router'
 import { isUrl } from '@/utils/is'
 import { omit, cloneDeep } from 'lodash-es'
 
@@ -33,7 +38,7 @@ export const getRawRoute = (route: RouteLocationNormalized): RouteLocationNormal
 }
 
 // 前端控制路由生成
-export const generateRoutesFn1 = (
+export const generateRoutesByFrontEnd = (
   routes: AppRouteRecordRaw[],
   keys: string[],
   basePath = '/'
@@ -41,9 +46,9 @@ export const generateRoutesFn1 = (
   const res: AppRouteRecordRaw[] = []
 
   for (const route of routes) {
-    const meta = route.meta as RouteMeta
+    const meta = route.meta ?? {}
     // skip some route
-    if (meta.hidden && !meta.showMainRoute) {
+    if (meta.hidden && !meta.canTo) {
       continue
     }
 
@@ -64,7 +69,7 @@ export const generateRoutesFn1 = (
       if (isUrl(item) && (onlyOneChild === item || route.path === item)) {
         data = Object.assign({}, route)
       } else {
-        const routePath = pathResolve(basePath, onlyOneChild || route.path)
+        const routePath = (onlyOneChild ?? pathResolve(basePath, route.path)).trim()
         if (routePath === item || meta.followRoute === item) {
           data = Object.assign({}, route)
         }
@@ -73,7 +78,11 @@ export const generateRoutesFn1 = (
 
     // recursive child routes
     if (route.children && data) {
-      data.children = generateRoutesFn1(route.children, keys, pathResolve(basePath, data.path))
+      data.children = generateRoutesByFrontEnd(
+        route.children,
+        keys,
+        pathResolve(basePath, data.path)
+      )
     }
     if (data) {
       res.push(data as AppRouteRecordRaw)
@@ -83,7 +92,7 @@ export const generateRoutesFn1 = (
 }
 
 // 后端控制路由生成
-export const generateRoutesFn2 = (routes: AppCustomRouteRecordRaw[]): AppRouteRecordRaw[] => {
+export const generateRoutesByServer = (routes: AppCustomRouteRecordRaw[]): AppRouteRecordRaw[] => {
   const res: AppRouteRecordRaw[] = []
 
   for (const route of routes) {
@@ -106,7 +115,7 @@ export const generateRoutesFn2 = (routes: AppCustomRouteRecordRaw[]): AppRouteRe
     }
     // recursive child routes
     if (route.children) {
-      data.children = generateRoutesFn2(route.children)
+      data.children = generateRoutesByServer(route.children)
     }
     res.push(data as AppRouteRecordRaw)
   }
@@ -116,7 +125,7 @@ export const generateRoutesFn2 = (routes: AppCustomRouteRecordRaw[]): AppRouteRe
 export const pathResolve = (parentPath: string, path: string) => {
   if (isUrl(path)) return path
   const childPath = path.startsWith('/') || !path ? path : `/${path}`
-  return `${parentPath}${childPath}`.replace(/\/\//g, '/')
+  return `${parentPath}${childPath}`.replace(/\/\//g, '/').trim()
 }
 
 // 路由降级
@@ -154,7 +163,7 @@ const isMultipleRoute = (route: AppRouteRecordRaw) => {
 // 生成二级路由
 const promoteRouteLevel = (route: AppRouteRecordRaw) => {
   let router: Router | null = createRouter({
-    routes: [route as unknown as RouteRecordNormalized],
+    routes: [route as RouteRecordRaw],
     history: createWebHashHistory()
   })
 

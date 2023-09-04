@@ -10,9 +10,11 @@ import { trim, setCssVar } from '@/utils'
 import ColorRadioPicker from './components/ColorRadioPicker.vue'
 import InterfaceDisplay from './components/InterfaceDisplay.vue'
 import LayoutRadioPicker from './components/LayoutRadioPicker.vue'
-import { useCache } from '@/hooks/web/useCache'
+import { useStorage } from '@/hooks/web/useStorage'
 import { useClipboard } from '@vueuse/core'
 import { useDesign } from '@/hooks/web/useDesign'
+
+const { removeStorage } = useStorage()
 
 const { getPrefixCls } = useDesign()
 
@@ -47,14 +49,13 @@ const setHeaderTheme = (color: string) => {
   setCssVar('--top-header-bg-color', color)
   setCssVar('--top-header-text-color', textColor)
   setCssVar('--top-header-hover-color', textHoverColor)
-  setCssVar('--top-tool-border-color', topToolBorderColor)
   appStore.setTheme({
     topHeaderBgColor: color,
     topHeaderTextColor: textColor,
     topHeaderHoverColor: textHoverColor,
     topToolBorderColor
   })
-  if (unref(layout) === 'top' && !appStore.getIsDark) {
+  if (unref(layout) === 'top') {
     setMenuTheme(color)
   }
 }
@@ -108,81 +109,88 @@ watch(
 
 // 拷贝
 const copyConfig = async () => {
-  const { copy, copied } = useClipboard({
+  const { copy, copied, isSupported } = useClipboard({
     source: `
-// 面包屑
-breadcrumb: ${appStore.getBreadcrumb},
-// 面包屑图标
-breadcrumbIcon: ${appStore.getBreadcrumbIcon},
-// 折叠图标
-hamburger: ${appStore.getHamburger},
-// 全屏图标
-screenfull: ${appStore.getScreenfull},
-// 尺寸图标
-size: ${appStore.getSize},
-// 多语言图标
-locale: ${appStore.getLocale},
-// 标签页
-tagsView: ${appStore.getTagsView},
-// logo
-logo: ${appStore.getLogo},
-// 固定header
-fixedHeader: ${appStore.getFixedHeader},
-// 页脚
-footer: ${appStore.getFooter},
-// 灰色模式
-greyMode: ${appStore.getGreyMode},
-// layout布局
-layout: '${appStore.getLayout}',
-// 暗黑模式
-isDark: ${appStore.getIsDark},
-// 组件尺寸
-currentSize: '${appStore.getCurrentSize}',
-// 主题相关
-theme: {
-  // 主题色
-  elColorPrimary: '${appStore.getTheme.elColorPrimary}',
-  // 左侧菜单边框颜色
-  leftMenuBorderColor: '${appStore.getTheme.leftMenuBorderColor}',
-  // 左侧菜单背景颜色
-  leftMenuBgColor: '${appStore.getTheme.leftMenuBgColor}',
-  // 左侧菜单浅色背景颜色
-  leftMenuBgLightColor: '${appStore.getTheme.leftMenuBgLightColor}',
-  // 左侧菜单选中背景颜色
-  leftMenuBgActiveColor: '${appStore.getTheme.leftMenuBgActiveColor}',
-  // 左侧菜单收起选中背景颜色
-  leftMenuCollapseBgActiveColor: '${appStore.getTheme.leftMenuCollapseBgActiveColor}',
-  // 左侧菜单字体颜色
-  leftMenuTextColor: '${appStore.getTheme.leftMenuTextColor}',
-  // 左侧菜单选中字体颜色
-  leftMenuTextActiveColor: '${appStore.getTheme.leftMenuTextActiveColor}',
-  // logo字体颜色
-  logoTitleTextColor: '${appStore.getTheme.logoTitleTextColor}',
-  // logo边框颜色
-  logoBorderColor: '${appStore.getTheme.logoBorderColor}',
-  // 头部背景颜色
-  topHeaderBgColor: '${appStore.getTheme.topHeaderBgColor}',
-  // 头部字体颜色
-  topHeaderTextColor: '${appStore.getTheme.topHeaderTextColor}',
-  // 头部悬停颜色
-  topHeaderHoverColor: '${appStore.getTheme.topHeaderHoverColor}',
-  // 头部边框颜色
-  topToolBorderColor: '${appStore.getTheme.topToolBorderColor}'
-}
+      // 面包屑
+      breadcrumb: ${appStore.getBreadcrumb},
+      // 面包屑图标
+      breadcrumbIcon: ${appStore.getBreadcrumbIcon},
+      // 折叠图标
+      hamburger: ${appStore.getHamburger},
+      // 全屏图标
+      screenfull: ${appStore.getScreenfull},
+      // 尺寸图标
+      size: ${appStore.getSize},
+      // 多语言图标
+      locale: ${appStore.getLocale},
+      // 标签页
+      tagsView: ${appStore.getTagsView},
+      // 标签页图标
+      getTagsViewIcon: ${appStore.getTagsViewIcon},
+      // logo
+      logo: ${appStore.getLogo},
+      // 菜单手风琴
+      uniqueOpened: ${appStore.getUniqueOpened},
+      // 固定header
+      fixedHeader: ${appStore.getFixedHeader},
+      // 页脚
+      footer: ${appStore.getFooter},
+      // 灰色模式
+      greyMode: ${appStore.getGreyMode},
+      // layout布局
+      layout: '${appStore.getLayout}',
+      // 暗黑模式
+      isDark: ${appStore.getIsDark},
+      // 组件尺寸
+      currentSize: '${appStore.getCurrentSize}',
+      // 主题相关
+      theme: {
+        // 主题色
+        elColorPrimary: '${appStore.getTheme.elColorPrimary}',
+        // 左侧菜单边框颜色
+        leftMenuBorderColor: '${appStore.getTheme.leftMenuBorderColor}',
+        // 左侧菜单背景颜色
+        leftMenuBgColor: '${appStore.getTheme.leftMenuBgColor}',
+        // 左侧菜单浅色背景颜色
+        leftMenuBgLightColor: '${appStore.getTheme.leftMenuBgLightColor}',
+        // 左侧菜单选中背景颜色
+        leftMenuBgActiveColor: '${appStore.getTheme.leftMenuBgActiveColor}',
+        // 左侧菜单收起选中背景颜色
+        leftMenuCollapseBgActiveColor: '${appStore.getTheme.leftMenuCollapseBgActiveColor}',
+        // 左侧菜单字体颜色
+        leftMenuTextColor: '${appStore.getTheme.leftMenuTextColor}',
+        // 左侧菜单选中字体颜色
+        leftMenuTextActiveColor: '${appStore.getTheme.leftMenuTextActiveColor}',
+        // logo字体颜色
+        logoTitleTextColor: '${appStore.getTheme.logoTitleTextColor}',
+        // logo边框颜色
+        logoBorderColor: '${appStore.getTheme.logoBorderColor}',
+        // 头部背景颜色
+        topHeaderBgColor: '${appStore.getTheme.topHeaderBgColor}',
+        // 头部字体颜色
+        topHeaderTextColor: '${appStore.getTheme.topHeaderTextColor}',
+        // 头部悬停颜色
+        topHeaderHoverColor: '${appStore.getTheme.topHeaderHoverColor}',
+        // 头部边框颜色
+        topToolBorderColor: '${appStore.getTheme.topToolBorderColor}'
+      }
     `
   })
-  await copy()
-  if (unref(copied)) {
-    ElMessage.success(t('setting.copySuccess'))
+  if (!isSupported) {
+    ElMessage.error(t('setting.copyFailed'))
+  } else {
+    await copy()
+    if (unref(copied)) {
+      ElMessage.success(t('setting.copySuccess'))
+    }
   }
 }
 
 // 清空缓存
 const clear = () => {
-  const { wsCache } = useCache()
-  wsCache.delete('layout')
-  wsCache.delete('theme')
-  wsCache.delete('isDark')
+  removeStorage('layout')
+  removeStorage('theme')
+  removeStorage('isDark')
   window.location.reload()
 }
 </script>
@@ -190,13 +198,13 @@ const clear = () => {
 <template>
   <div
     :class="prefixCls"
-    class="fixed top-[45%] right-0 w-40px h-40px text-center leading-40px bg-[var(--el-color-primary)] cursor-pointer"
+    class="fixed top-[45%] right-0 w-40px h-40px flex items-center justify-center bg-[var(--el-color-primary)] cursor-pointer z-10"
     @click="drawer = true"
   >
     <Icon icon="ant-design:setting-outlined" color="#fff" />
   </div>
 
-  <ElDrawer v-model="drawer" direction="rtl" size="350px">
+  <ElDrawer v-model="drawer" direction="rtl" size="350px" :z-index="4000">
     <template #header>
       <span class="text-16px font-700">{{ t('setting.projectSetting') }}</span>
     </template>

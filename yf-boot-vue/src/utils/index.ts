@@ -1,4 +1,4 @@
-import type { App, Plugin } from 'vue'
+// import type { Plugin } from 'vue'
 
 /**
  *
@@ -8,7 +8,7 @@ import type { App, Plugin } from 'vue'
  */
 export const withInstall = <T>(component: T, alias?: string) => {
   const comp = component as any
-  comp.install = (app: App) => {
+  comp.install = (app: any) => {
     app.component(comp.name || comp.displayName, component)
     if (alias) {
       app.config.globalProperties[alias] = component
@@ -30,9 +30,17 @@ export const humpToUnderline = (str: string): string => {
  * @returns 字符串驼峰
  */
 export const underlineToHump = (str: string): string => {
+  if (!str) return ''
   return str.replace(/\-(\w)/g, (_, letter: string) => {
     return letter.toUpperCase()
   })
+}
+
+/**
+ * 驼峰转横杠
+ */
+export const humpToDash = (str: string): string => {
+  return str.replace(/([A-Z])/g, '-$1').toLowerCase()
 }
 
 export const setCssVar = (prop: string, val: any, dom = document.documentElement) => {
@@ -106,4 +114,11 @@ export function toAnyString() {
     return v.toString()
   })
   return str
+}
+
+/**
+ * 首字母大写
+ */
+export function firstUpperCase(str: string) {
+  return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
 }

@@ -1,26 +1,31 @@
 import { ElSubMenu, ElMenuItem } from 'element-plus'
-import type { RouteMeta } from 'vue-router'
+import { hasOneShowingChild } from '../helper'
 import { useRenderMenuTitle } from './useRenderMenuTitle'
 import { useDesign } from '@/hooks/web/useDesign'
+import { pathResolve } from '@/utils/routerHelper'
+
+const { renderMenuTitle } = useRenderMenuTitle()
 
 export const useRenderMenuItem = (
-  allRouters: AppRouteRecordRaw[] = [],
+  // allRouters: AppRouteRecordRaw[] = [],
   menuMode: 'vertical' | 'horizontal'
 ) => {
-  const renderMenuItem = (routers?: AppRouteRecordRaw[]) => {
-    return (routers || allRouters).map((v) => {
-      const meta = (v.meta ?? {}) as RouteMeta
+  const renderMenuItem = (routers: AppRouteRecordRaw[]) => {
+    return routers.map((v) => {
+      const meta = v.meta ?? {}
       if (!meta.hidden) {
-        // 全部子菜单都使用完整URL地址
+        const { oneShowingChild, onlyOneChild } = hasOneShowingChild(v.children, v)
         const fullPath = v.path
-        const { renderMenuTitle } = useRenderMenuTitle()
 
-        // 如果没有子菜单或目录
-        if (!v.children) {
+        if (
+          oneShowingChild &&
+          (!onlyOneChild?.children || onlyOneChild?.noShowingChildren) &&
+          !meta?.alwaysShow
+        ) {
           return (
-            <ElMenuItem index={fullPath}>
+            <ElMenuItem index={onlyOneChild ? pathResolve(fullPath, onlyOneChild.path) : fullPath}>
               {{
-                default: () => renderMenuTitle(meta)
+                default: () => renderMenuTitle(onlyOneChild ? onlyOneChild?.meta : meta)
               }}
             </ElMenuItem>
           )
@@ -37,7 +42,7 @@ export const useRenderMenuItem = (
             >
               {{
                 title: () => renderMenuTitle(meta),
-                default: () => renderMenuItem(v.children)
+                default: () => renderMenuItem(v.children!)
               }}
             </ElSubMenu>
           )

@@ -35,7 +35,7 @@ const createI18nOptions = async (): Promise<I18nOptions> => {
   }
 }
 
-export const setupI18n = async (app: App) => {
+export const setupI18n = async (app: App<Element>) => {
   const options = await createI18nOptions()
   i18n = createI18n(options) as I18n
   app.use(i18n)
