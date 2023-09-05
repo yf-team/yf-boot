@@ -1,31 +1,26 @@
 <template>
   <ContentWrap>
-    <data-table
-      :options="options"
-      :query="query"
-      @on-add="handleAdd(formRef)"
-      @on-edit="handleEdit"
-      ref="table"
-    >
+    <data-table :options="options" :query="query" ref="table">
       <template #search>
-        <DepartSelect v-model="query.params.deptCode" class="filter-item" />
-        <el-input
+        <DictListSelect
+          v-model="query.params.groupId"
+          dic-code="plugin_group"
           class="filter-item"
-          v-model="query.params['roleName']"
-          placeholder="搜索角色名称"
         />
+
+        <el-input class="filter-item" v-model="query.params.title" placeholder="插件名称" />
       </template>
 
       <template #columns>
         <el-table-column type="selection" width="50px" />
+        <el-table-column prop="code" label="插件编号" />
         <el-table-column prop="title" label="插件名称" />
-        <el-table-column prop="groupId" label="插件类型" />
-        <el-table-column prop="inUse" label="使用状态" />
+        <el-table-column prop="groupId_dictText" label="插件类型" />
 
-        <el-table-column label="状态" width="180px" :align="'center'">
+        <el-table-column label="使用状态" width="180px" :align="'center'">
           <template #default="scope">
-            <el-tag type="success" v-if="scope.row.state === 0">正常</el-tag>
-            <el-tag type="danger" v-else>禁用</el-tag>
+            <el-tag type="success" v-if="scope.row.inUse">使用中</el-tag>
+            <el-tag type="danger" v-else>未使用</el-tag>
           </template>
         </el-table-column>
 
@@ -47,7 +42,7 @@
       <el-form :model="form" ref="formRef" label-width="150px">
         <template v-for="item in configItems" :key="item.name">
           <el-form-item :label="item.title" :prop="item.name">
-            <el-input v-model="form[item.name]" autocomplete="off" />
+            <el-input v-model="form[item.name || 'none']" autocomplete="off" />
           </el-form-item>
         </template>
       </el-form>
@@ -65,15 +60,14 @@
 <script lang="ts" setup>
 import { ContentWrap } from '@/components/ContentWrap'
 import { DataTable } from '@/components/DataTable'
-import { ref, reactive, unref } from 'vue'
+import { ref, unref } from 'vue'
 import type { OptionsType, TableQueryType } from '@/components/DataTable/src/types'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { saveApi, detailApi } from '@/api/sys/user'
-import RoleSelect from '../Role/components/RoleSelect.vue'
-import DepartSelect from '../Depart/components/DepartSelect.vue'
-import type { UserDataType } from './types'
+import { saveConfig } from '@/api/sys/plugin/data'
 import { detailApi as schemaDetail } from '@/api/sys/plugin/schema'
+import DictListSelect from '@/components/DictListSelect/src/DictListSelect.vue'
+import type { ConfigIem } from './types'
 
 // 表格查询参数
 let query = ref<TableQueryType>({
@@ -85,7 +79,7 @@ let query = ref<TableQueryType>({
   }
 })
 
-const configItems = ref([])
+const configItems = ref<ConfigIem[]>()
 
 // 表格默认参数
 let options = ref<OptionsType>({
@@ -124,8 +118,12 @@ const table = ref()
 const dialogVisible = ref(false)
 const form = ref({})
 const formRef = ref<FormInstance>()
+const current = ref()
 
 const showConfig = (data: any) => {
+  // 当前数据
+  current.value = data
+
   // 加载元数据
   schemaDetail({ id: data.schemaId }).then((res) => {
     configItems.value = JSON.parse(res.data.schemaData)
@@ -133,32 +131,15 @@ const showConfig = (data: any) => {
   })
 
   if (data.configData) {
-    form.value = JSON.parse(data.configData)
+    form.value = data.configData
   } else {
     form.value = {}
   }
-
   dialogVisible.value = true
-}
-
-const handleAdd = (formEl: FormInstance | undefined) => {
-  dialogVisible.value = true
-  form.value = {}
-  formEl?.resetFields()
 }
 
 const handleClose = () => {
   dialogVisible.value = false
-}
-
-const handleEdit = (row: any) => {
-  detailApi({ id: row.id }).then((res) => {
-    // 数据
-    console.log('data', res.data)
-    form.value = res.data
-  })
-
-  dialogVisible.value = true
 }
 
 const handleSave = (formEl: FormInstance | undefined) => {
@@ -166,11 +147,15 @@ const handleSave = (formEl: FormInstance | undefined) => {
 
   formEl.validate((valid) => {
     if (valid) {
-      const formData = unref(form)
-      saveApi(formData).then(() => {
+      const params = {
+        id: current.value.id,
+        configData: unref(form)
+      }
+
+      saveConfig(params).then(() => {
         ElMessage({
           showClose: true,
-          message: '操作成功！',
+          message: '配置保存成功！',
           type: 'success'
         })
         // 刷新表格

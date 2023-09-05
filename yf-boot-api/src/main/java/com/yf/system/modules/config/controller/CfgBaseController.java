@@ -2,8 +2,8 @@ package com.yf.system.modules.config.controller;
 
 import com.yf.base.api.api.ApiRest;
 import com.yf.base.api.api.controller.BaseController;
-import com.yf.system.modules.config.dto.CfgUploadDTO;
-import com.yf.system.modules.config.service.CfgUploadService;
+import com.yf.system.modules.config.dto.CfgBaseDTO;
+import com.yf.system.modules.config.service.CfgBaseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,34 +22,32 @@ import org.springframework.web.bind.annotation.RestController;
 */
 @Api(tags={"通用配置"})
 @RestController
-@RequestMapping("/api/sys/config/upload")
-public class CfgUploadController extends BaseController {
+@RequestMapping("/api/sys/config")
+public class CfgBaseController extends BaseController {
 
     @Autowired
-    private CfgUploadService baseService;
-
+    private CfgBaseService baseService;
 
     /**
-     * 添加或修改
-     * @param reqDTO
-     * @return
-     */
-    @ApiOperation(value = "添加或修改")
+    * 添加或修改
+    * @param reqDTO
+    * @return
+    */
+    @ApiOperation(value = "保存基础配置")
     @RequestMapping(value = "/save", method = { RequestMethod.POST})
-    public ApiRest save(@RequestBody CfgUploadDTO reqDTO) {
+    public ApiRest save(@RequestBody CfgBaseDTO reqDTO) {
         baseService.save(reqDTO);
         return super.success();
     }
 
     /**
-     * 查找详情
-     * @param reqDTO
-     * @return
-     */
-    @ApiOperation(value = "查找详情")
+    * 查找详情
+    * @return
+    */
+    @ApiOperation(value = "简略详情")
     @RequestMapping(value = "/detail", method = { RequestMethod.POST})
-    public ApiRest<CfgUploadDTO> detail(@RequestBody CfgUploadDTO reqDTO) {
-        CfgUploadDTO dto = baseService.detail(reqDTO.getProvider());
+    public ApiRest<CfgBaseDTO> detail() {
+        CfgBaseDTO dto = baseService.findSimple();
         return super.success(dto);
     }
 }

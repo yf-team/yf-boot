@@ -1,4 +1,4 @@
-package com.yf.ability.upload.provides.local.dto;
+package com.yf.plugins.upload.local.dto;
 
 import com.yf.base.api.api.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;

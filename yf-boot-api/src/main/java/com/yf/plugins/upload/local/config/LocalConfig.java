@@ -1,4 +1,4 @@
-package com.yf.ability.upload.provides.local.config;
+package com.yf.plugins.upload.local.config;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,6 +28,6 @@ public class LocalConfig implements Serializable {
     private String localDir;
 
     @ApiModelProperty(value = "访问路径")
-    private String url;
+    private String visitUrl;
 
 }

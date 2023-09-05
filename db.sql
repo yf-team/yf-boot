@@ -11,7 +11,7 @@
  Target Server Version : 80028 (8.0.28)
  File Encoding         : 65001
 
- Date: 04/09/2023 15:13:07
+ Date: 05/09/2023 12:01:23
 */
 
 SET NAMES utf8mb4;
@@ -35,7 +35,7 @@ CREATE TABLE `el_cfg_base` (
 -- Records of el_cfg_base
 -- ----------------------------
 BEGIN;
-INSERT INTO `el_cfg_base` (`id`, `site_name`, `login_logo`, `login_bg`, `back_logo`, `copy_right`) VALUES ('1', '快速开发平台', 'http://localhost:8080/upload/file/2023/09/01/1697543225524461569.png', 'https://www.kaoshifeng.com/img/advantages/4.png', 'https://files.yfhl.net/2022/11/21/1669011274378-914f43d8.png', '&copy; 2022北京云帆互联科技有限公司 <a href=\"https://www.yfhl.net\" target=\"_blank\">企业官网</a> | <a href=\"https://www.yfhl.net/contactus.html\" target=\"_blank\">联系我们</a>');
+INSERT INTO `el_cfg_base` (`id`, `site_name`, `login_logo`, `login_bg`, `back_logo`, `copy_right`) VALUES ('1', '云帆快速开发平台', 'http://localhost:8080/upload/file/2023/09/01/1697543225524461569.png', 'https://www.kaoshifeng.com/img/advantages/4.png', 'https://files.yfhl.net/2022/11/21/1669011274378-914f43d8.png', '&copy; 2022北京云帆互联科技有限公司 <a href=\"https://www.yfhl.net\" target=\"_blank\">企业官网</a> | <a href=\"https://www.yfhl.net/contactus.html\" target=\"_blank\">联系我们</a>');
 COMMIT;
 
 -- ----------------------------
@@ -52,29 +52,6 @@ CREATE TABLE `el_cfg_switch` (
 -- Records of el_cfg_switch
 -- ----------------------------
 BEGIN;
-COMMIT;
-
--- ----------------------------
--- Table structure for el_cfg_upload
--- ----------------------------
-DROP TABLE IF EXISTS `el_cfg_upload`;
-CREATE TABLE `el_cfg_upload` (
-  `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ID',
-  `provider` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '服务提供商',
-  `enabled` tinyint DEFAULT NULL COMMENT '是否启用',
-  `data` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '配置数据',
-  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注信息',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='上传配置';
-
--- ----------------------------
--- Records of el_cfg_upload
--- ----------------------------
-BEGIN;
-INSERT INTO `el_cfg_upload` (`id`, `provider`, `enabled`, `data`, `remark`) VALUES ('1526038580764360705', 'qiniu', 0, '{\"bucket\":\"yf-exam\",\"accessKeyId\":\"edyB3_QoqGQWLXoKIONXUi63qvOGuMhpZAwfmitA\",\"endpoint\":\"https://upload-z2.qiniup.com\",\"accessKeySecret\":\"rn-M1FEN2OgZcFqfLJCb3LdfJDbLcY-_zlsg9toT\",\"url\":\"http://qiniu-cdn.jeegen.com/\"}', '');
-INSERT INTO `el_cfg_upload` (`id`, `provider`, `enabled`, `data`, `remark`) VALUES ('1526040155742289922', 'cos', 0, '{\"bucket\":\"yfhl-1252868612\",\"secretKey\":\"5zd1ImTyKTN0QcaIo7FnUv60jEVWliqI\",\"secretId\":\"AKID91mzwNDR5WfXGjrgkGZbMs78s2z9p4JN\",\"region\":\"ap-beijing\",\"url\":\"https://yfhl-1252868612.cos.ap-beijing.myqcloud.com/\"}', '');
-INSERT INTO `el_cfg_upload` (`id`, `provider`, `enabled`, `data`, `remark`) VALUES ('1536906975202283521', 'local', 0, '{\"localDir\":\"/Users/van/work/upload/\",\"url\":\"http://localhost:8080\"}', '');
-INSERT INTO `el_cfg_upload` (`id`, `provider`, `enabled`, `data`, `remark`) VALUES ('1537629737109762049', 'oss', 1, '{\"accessKeyId\":\"LTAI5t5kUQde7fGu83s8cC23\",\"pipeline\":\"fabae21dbe264fa5aad0bdb17295d9e3\",\"bucket\":\"yfhl-files\",\"accessKeySecret\":\"Exli25RLrjpMWGxJUurj7Z566vVSNq\",\"endpoint\":\"oss-cn-beijing\",\"localDir\":\"/Users/van/work/upload/\",\"project\":\"bjconv\",\"url\":\"https://cdn.jeegen.com/\"}', '');
 COMMIT;
 
 -- ----------------------------
@@ -138,6 +115,7 @@ INSERT INTO `el_sys_dic` (`id`, `code`, `type`, `title`, `remark`, `create_time`
 INSERT INTO `el_sys_dic` (`id`, `code`, `type`, `title`, `remark`, `create_time`, `update_time`, `create_by`, `update_by`) VALUES ('1546399651832299522', 'user_state', 1, '用户状态', '用户状态', '2022-07-11 15:43:02', '2022-07-11 15:43:02', '', '');
 INSERT INTO `el_sys_dic` (`id`, `code`, `type`, `title`, `remark`, `create_time`, `update_time`, `create_by`, `update_by`) VALUES ('1552482298987851778', 'menu_type', 1, '菜单类型', '目录/菜单/功能', '2022-07-28 10:33:18', '2022-07-28 10:33:18', '', '');
 INSERT INTO `el_sys_dic` (`id`, `code`, `type`, `title`, `remark`, `create_time`, `update_time`, `create_by`, `update_by`) VALUES ('1552554336742055937', 'dic_type', 1, '字典类型', '数据字典类型枚举', '2022-07-28 15:19:33', '2022-07-28 15:19:33', '', '');
+INSERT INTO `el_sys_dic` (`id`, `code`, `type`, `title`, `remark`, `create_time`, `update_time`, `create_by`, `update_by`) VALUES ('1698896002028761089', 'plugin_group', 1, '插件类型', NULL, '2023-09-05 11:09:05', '2023-09-05 11:09:05', '', '');
 COMMIT;
 
 -- ----------------------------
@@ -177,6 +155,7 @@ INSERT INTO `el_sys_dic_value` (`id`, `dic_code`, `value`, `title`, `parent_id`,
 INSERT INTO `el_sys_dic_value` (`id`, `dic_code`, `value`, `title`, `parent_id`, `remark`, `create_time`, `update_time`, `create_by`, `update_by`) VALUES ('1552483066511929345', 'menu_type', '3', '功能', '0', NULL, '2022-07-28 10:36:21', '2022-07-28 10:36:21', '', '');
 INSERT INTO `el_sys_dic_value` (`id`, `dic_code`, `value`, `title`, `parent_id`, `remark`, `create_time`, `update_time`, `create_by`, `update_by`) VALUES ('1552554710609731586', 'dic_type', '1', '数据字典', '0', NULL, '2022-07-28 15:21:02', '2022-07-28 15:21:02', '', '');
 INSERT INTO `el_sys_dic_value` (`id`, `dic_code`, `value`, `title`, `parent_id`, `remark`, `create_time`, `update_time`, `create_by`, `update_by`) VALUES ('1552554758366076929', 'dic_type', '2', '分类字典', '0', NULL, '2022-07-28 15:21:14', '2022-07-28 15:21:14', '', '');
+INSERT INTO `el_sys_dic_value` (`id`, `dic_code`, `value`, `title`, `parent_id`, `remark`, `create_time`, `update_time`, `create_by`, `update_by`) VALUES ('1698896091577151490', 'plugin_group', 'upload', '文件上传', '0', NULL, '2023-09-05 11:09:26', '2023-09-05 11:09:26', '', '');
 COMMIT;
 
 -- ----------------------------
@@ -436,10 +415,12 @@ COMMIT;
 DROP TABLE IF EXISTS `pl_plugin_data`;
 CREATE TABLE `pl_plugin_data` (
   `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ID',
+  `code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '唯一识别码',
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '插件名称',
   `schema_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '元数据ID',
   `group_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分组ID',
   `config_data` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '配置数据',
+  `service_clazz` varchar(2000) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '后端服务类',
   `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '前端页面',
   `in_use` tinyint NOT NULL COMMENT '是否使用',
   `state` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '插件状态',
@@ -450,8 +431,8 @@ CREATE TABLE `pl_plugin_data` (
 -- Records of pl_plugin_data
 -- ----------------------------
 BEGIN;
-INSERT INTO `pl_plugin_data` (`id`, `title`, `schema_id`, `group_id`, `config_data`, `component`, `in_use`, `state`) VALUES ('10001', '阿里云上传', 'upload_aliyun', 'upload', NULL, ' ', 0, '0');
-INSERT INTO `pl_plugin_data` (`id`, `title`, `schema_id`, `group_id`, `config_data`, `component`, `in_use`, `state`) VALUES ('10002', '本地上传', 'upload_local', 'upload', '{\"localDir\":\"/data/upload/\", \"visitUrl\": \"https://exam.yfhl.net\"}', ' ', 0, '0');
+INSERT INTO `pl_plugin_data` (`id`, `code`, `title`, `schema_id`, `group_id`, `config_data`, `service_clazz`, `component`, `in_use`, `state`) VALUES ('10001', '', '阿里云上传', 'upload_aliyun', 'upload', '{\"endPoint\":\"111\",\"bucket\":\"22\",\"accessKeyId\":\"33\",\"acccessKeySecret\":\"44\",\"visitUrl\":\"55\"}', NULL, ' ', 0, '0');
+INSERT INTO `pl_plugin_data` (`id`, `code`, `title`, `schema_id`, `group_id`, `config_data`, `service_clazz`, `component`, `in_use`, `state`) VALUES ('10002', 'upload-local', '本地上传', 'upload_local', 'upload', '{\"localDir\":\"/Users/van/work/yf-boot/\",\"visitUrl\":\"http://localhost:8080\"}', 'com.yf.plugins.upload.local.service.impl.LocalUpServiceImpl', ' ', 1, '0');
 COMMIT;
 
 -- ----------------------------
@@ -655,7 +636,7 @@ CREATE TABLE `qrtz_scheduler_state` (
 -- Records of qrtz_scheduler_state
 -- ----------------------------
 BEGIN;
-INSERT INTO `qrtz_scheduler_state` (`SCHED_NAME`, `INSTANCE_NAME`, `LAST_CHECKIN_TIME`, `CHECKIN_INTERVAL`) VALUES ('examScheduler', 'MacBook-Pro-16.local1693811200522', 1693811583186, 10000);
+INSERT INTO `qrtz_scheduler_state` (`SCHED_NAME`, `INSTANCE_NAME`, `LAST_CHECKIN_TIME`, `CHECKIN_INTERVAL`) VALUES ('examScheduler', 'MacBook-Pro-16.local1693886329582', 1693886481860, 10000);
 COMMIT;
 
 -- ----------------------------

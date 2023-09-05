@@ -1,5 +1,9 @@
 package com.yf.system.modules.plugin.dto;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.yf.base.api.annon.Dict;
+import com.yf.base.utils.jackson.RawJsonDeserializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -24,17 +28,26 @@ public class PluginDataDTO implements Serializable {
     @ApiModelProperty(value = "ID", required=true)
     private String id;
 
+    @ApiModelProperty(value = "插件编号", required=true)
+    private String code;
+
     @ApiModelProperty(value = "插件名称", required=true)
     private String title;
 
     @ApiModelProperty(value = "元数据ID", required=true)
     private String schemaId;
 
+    @Dict(dicCode = "plugin_group")
     @ApiModelProperty(value = "分组ID", required=true)
     private String groupId;
 
+    @JsonRawValue
+    @JsonDeserialize(using = RawJsonDeserializer.class)
     @ApiModelProperty(value = "配置数据")
     private String configData;
+
+    @ApiModelProperty(value = "后端服务类")
+    private String serviceClazz;
 
     @ApiModelProperty(value = "前端页面", required=true)
     private String component;

@@ -105,7 +105,7 @@ export default {
   },
   login: {
     welcome: '欢迎使用本系统',
-    message: '基于代码生成器开箱即用的中后台管理系统',
+    message: '基于SpringBoot+Vue3前后端完整中后台管理系统解决方案。',
     username: '用户名',
     password: '密码',
     register: '注册',

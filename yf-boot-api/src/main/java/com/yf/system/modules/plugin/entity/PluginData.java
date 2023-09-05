@@ -28,6 +28,11 @@ public class PluginData extends Model<PluginData> {
     private String id;
 
     /**
+     * 插件编号
+     */
+    private String code;
+
+    /**
     * 插件名称
     */
     private String title;
@@ -49,6 +54,12 @@ public class PluginData extends Model<PluginData> {
     */
     @TableField("config_data")
     private String configData;
+
+    /**
+     * 后端服务类
+     */
+    @TableField("service_clazz")
+    private String serviceClazz;
 
     /**
     * 前端页面

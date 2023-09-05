@@ -3,9 +3,17 @@ import config from './config'
 
 import { AxiosInstance, InternalAxiosRequestConfig, RequestConfig, AxiosResponse } from './types'
 import { useAppStoreWithOut } from '@/store/modules/app'
+import { ElMessage } from 'element-plus'
+import { useStorage } from '@/hooks/web/useStorage'
+import { useTagsViewStore } from '@/store/modules/tagsView'
+import router, { resetRouter } from '@/router'
+const { clear } = useStorage()
 const appStore = useAppStoreWithOut()
+const tagsViewStore = useTagsViewStore()
 
-export const PATH_URL = import.meta.env.VITE_API_HOST
+export const PATH_URL = import.meta.env.VITE_API_HOST || ''
+const code_success = 0
+const code_overdue = 10010002
 const abortControllerMap: Map<string, AbortController> = new Map()
 const axiosInstance: AxiosInstance = axios.create({
   ...config,
@@ -15,13 +23,11 @@ const axiosInstance: AxiosInstance = axios.create({
 axiosInstance.interceptors.request.use((res: InternalAxiosRequestConfig) => {
   const controller = new AbortController()
   const url = res.url || ''
-  console.log('+++++开始请求', url)
   const userInfo = appStore.getUserInfo
   // 传入token
   if (userInfo && userInfo.token && res && res.headers) {
     res.headers['token'] = userInfo.token
   }
-
   res.signal = controller.signal
   abortControllerMap.set(url, controller)
   return res
@@ -29,16 +35,32 @@ axiosInstance.interceptors.request.use((res: InternalAxiosRequestConfig) => {
 
 axiosInstance.interceptors.response.use(
   (res: AxiosResponse) => {
+    if (res.data.code === code_success) {
+      return res.data
+    }
+
+    if (res.data.code === code_overdue) {
+      ElMessage.error(res.data.msg)
+      // 置空残留会话
+      appStore.setUserInfo({})
+      // 清除缓存数据等
+      clear()
+      // 重置静态路由表
+      tagsViewStore.delAllViews()
+      // 重置静态路由表
+      resetRouter()
+      // 跳转到登录页面
+      router.replace('/login')
+    } else {
+      ElMessage.error(res.data.msg)
+    }
+
     const url = res.config.url || ''
     abortControllerMap.delete(url)
-    console.log('响应数据：', res.data)
     return res.data
   },
   (err: any) => err
 )
-
-// axiosInstance.interceptors.request.use(requestInterceptors || defaultRequestInterceptors)
-// axiosInstance.interceptors.response.use(responseInterceptors || defaultResponseInterceptors)
 
 const service = {
   request: (config: RequestConfig) => {

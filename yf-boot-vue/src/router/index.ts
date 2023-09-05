@@ -10,19 +10,20 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/home/dashboard',
     name: 'Home',
     children: [
       {
-        path: '/dashboard',
+        path: '/home/dashboard',
         name: 'Dashboard',
         component: () => import('@/views/Dashboard/Dashboard.vue'),
-        meta: {}
+        meta: {
+          title: '首页'
+        }
       }
     ],
     meta: {
-      hidden: true,
-      noTagsView: true
+      hidden: true
     }
   },
 
@@ -75,7 +76,8 @@ const router = createRouter({
 })
 
 export const resetRouter = (): void => {
-  const resetWhiteNameList = ['Redirect', 'Login', 'NoFind', 'Root']
+  // Home和Dashboard后续放到后端路由
+  const resetWhiteNameList = ['Home', 'Dashboard', 'Redirect', 'Login', 'NoFind', 'Root']
   router.getRoutes().forEach((route) => {
     const { name } = route
     if (name && !resetWhiteNameList.includes(name as string)) {

@@ -41,7 +41,10 @@ const loginOut = () => {
       if (res) {
         clear()
         tagsViewStore.delAllViews()
-        resetRouter() // 重置静态路由表
+        // 重置静态路由表
+        resetRouter()
+        // 清理数据
+        appStore.setUserInfo({})
         await replace('/login')
       }
     })

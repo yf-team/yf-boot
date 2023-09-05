@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yf.base.api.api.dto.PagingReqDTO;
+import com.yf.base.api.exception.ServiceException;
 import com.yf.base.utils.BeanMapper;
 import com.yf.base.utils.jackson.JsonHelper;
 import com.yf.system.modules.plugin.dto.PluginDataDTO;
@@ -79,5 +80,35 @@ public class PluginDataServiceImpl extends ServiceImpl<PluginDataMapper, PluginD
         List<PluginDataDTO> dtoList = BeanMapper.mapList(list, PluginDataDTO.class);
 
         return dtoList;
+    }
+
+    @Override
+    public String findConfig(String code) {
+        //分页查询并转换
+        QueryWrapper<PluginData> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(PluginData::getCode, code);
+
+        PluginData data = this.getOne(wrapper, false);
+        if(data == null){
+            throw new ServiceException("插件配置不存在！");
+        }
+
+        return data.getConfigData();
+    }
+
+    @Override
+    public String findServiceClazz(String groupId) {
+        //分页查询并转换
+        QueryWrapper<PluginData> wrapper = new QueryWrapper<>();
+        wrapper.lambda()
+                .eq(PluginData::getGroupId, groupId)
+                .orderByDesc(PluginData::getInUse);
+
+        PluginData data = this.getOne(wrapper, false);
+        if(data == null){
+            throw new ServiceException("插件配置不存在！");
+        }
+
+        return data.getServiceClazz();
     }
 }

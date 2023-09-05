@@ -1,12 +1,4 @@
-import {
-  AxiosConfig,
-  AxiosResponse,
-  AxiosRequestHeaders,
-  AxiosError,
-  InternalAxiosRequestConfig
-} from './types'
-import { ElMessage } from 'element-plus'
-import qs from 'qs'
+import { AxiosConfig } from './types'
 const config: AxiosConfig = {
   /**
    * 接口成功返回状态码
@@ -35,49 +27,4 @@ const config: AxiosConfig = {
     // }
   }
 }
-
-const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
-  if (
-    config.method === 'post' &&
-    (config.headers as AxiosRequestHeaders)['Content-Type'] === 'application/x-www-form-urlencoded'
-  ) {
-    config.data = qs.stringify(config.data)
-  }
-  if (config.method === 'get' && config.params) {
-    let url = config.url as string
-    url += '?'
-    const keys = Object.keys(config.params)
-    for (const key of keys) {
-      if (config.params[key] !== void 0 && config.params[key] !== null) {
-        url += `${key}=${encodeURIComponent(config.params[key])}&`
-      }
-    }
-    url = url.substring(0, url.length - 1)
-    config.params = {}
-    config.url = url
-  }
-  return config
-}
-;(error: AxiosError) => {
-  console.log(error)
-  Promise.reject(error)
-}
-
-const defaultResponseInterceptors = (response: AxiosResponse<any>) => {
-  if (response?.config?.responseType === 'blob') {
-    // 如果是文件流，直接过
-    return response
-  } else if (response.data.code === config.code) {
-    return response.data
-  } else {
-    ElMessage.error(response.data.message)
-  }
-}
-;(error: AxiosError) => {
-  console.log('err' + error) // for debug
-  ElMessage.error(error.message)
-  return Promise.reject(error)
-}
-
-export { defaultResponseInterceptors, defaultRequestInterceptors }
 export default config

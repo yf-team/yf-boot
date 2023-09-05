@@ -1,4 +1,4 @@
-package com.yf.ability.upload.provides.local.utils;
+package com.yf.plugins.upload.local.utils;
 
 
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;

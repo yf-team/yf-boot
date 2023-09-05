@@ -235,10 +235,13 @@ const getRole = async () => {
     await permissionStore.generateRoutes('server', routers).catch(() => {})
 
     permissionStore.getAddRouters.forEach((route) => {
-      addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
+      // 动态添加可访问路由表
+      addRoute(route as RouteRecordRaw)
     })
     permissionStore.setIsAddRouters(true)
-    push({ path: redirect.value || permissionStore.addRouters[0].path })
+    // 跳转到记录页面或首页
+    // push(redirect.value || '/home/dashboard')
+    push('/home/dashboard')
   }
 }
 

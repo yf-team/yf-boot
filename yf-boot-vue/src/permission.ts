@@ -27,7 +27,6 @@ router.beforeEach(async (to, from, next) => {
   // 获取网站基本信息
   if (!appStore.getSiteInfo || !appStore.getSiteInfo.id) {
     await fetchSteInfo({}).then((res) => {
-      console.log('数据呢？', res)
       appStore.setSiteInfo(res.data)
     })
   }
@@ -41,7 +40,7 @@ router.beforeEach(async (to, from, next) => {
         return
       }
 
-      // 开发者可根据实际情况进行修改
+      // 构建路由
       const roleRouters = getStorage('roleRouters') || []
       await permissionStore.generateRoutes('server', roleRouters as AppCustomRouteRecordRaw[])
 

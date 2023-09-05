@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.Map;
  * 配置json脱敏相关
  * @author van
  */
+@Log4j2
 public class DesensitizeSerializer extends JsonSerializer<String> {
 
 
@@ -34,8 +36,16 @@ public class DesensitizeSerializer extends JsonSerializer<String> {
             return;
         }
 
+        System.out.println("+++++待转换的JSON数据："+json);
+
         // 进行数据转换
-        map = JsonHelper.parseObject(json, new TypeReference<Map<String, Object>>() {});
+        try {
+            map = JsonHelper.parseObject(json, new TypeReference<Map<String, Object>>() {});
+        }catch (Exception e){
+            jsonGenerator.writeObject(map);
+            log.error(e);
+            return;
+        }
 
         if(!map.isEmpty()){
             for(String key: map.keySet()){
@@ -94,4 +104,10 @@ public class DesensitizeSerializer extends JsonSerializer<String> {
     }
 
 
+    public static void main(String[] args) {
+
+        String json = "{\"localDir\":\"/Users/van/work/yf-boot/\", \"visitUrl\": \"http://localhost:8080\"}";
+       Map<String,Object> map = JsonHelper.parseObject(json, new TypeReference<Map<String, Object>>() {});
+       System.out.println(map.toString());
+    }
 }

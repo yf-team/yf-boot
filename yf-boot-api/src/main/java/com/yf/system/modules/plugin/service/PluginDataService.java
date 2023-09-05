@@ -52,4 +52,18 @@ public interface PluginDataService extends IService<PluginData> {
     * @return
     */
     List<PluginDataDTO> list(PluginDataDTO reqDTO);
+
+    /**
+     * 根据插件编码查找配置数据，为JSON字符串
+     * @param code
+     * @return
+     */
+    String findConfig(String code);
+
+    /**
+     * 查找插件服务类，用于实例化数据
+     * @param groupId
+     * @return
+     */
+    String findServiceClazz(String groupId);
 }

@@ -1,16 +1,13 @@
-package com.yf.ability.upload.provides.local.service.impl;
+package com.yf.plugins.upload.local.service.impl;
 
-import com.yf.base.api.exception.ServiceException;
 import com.yf.ability.Constant;
-import com.yf.ability.upload.enums.UploadProvider;
-import com.yf.ability.upload.provides.local.config.LocalConfig;
-import com.yf.ability.upload.provides.local.dto.UploadReqDTO;
-import com.yf.ability.upload.provides.local.dto.UploadRespDTO;
-import com.yf.ability.upload.provides.local.service.LocalUpService;
-import com.yf.ability.upload.provides.local.utils.OssUtils;
+import com.yf.ability.upload.service.UploadService;
+import com.yf.base.api.exception.ServiceException;
 import com.yf.base.utils.jackson.JsonHelper;
-import com.yf.system.modules.config.dto.CfgUploadDTO;
-import com.yf.system.modules.config.service.CfgUploadService;
+import com.yf.plugins.upload.local.config.LocalConfig;
+import com.yf.plugins.upload.local.dto.UploadRespDTO;
+import com.yf.plugins.upload.local.utils.OssUtils;
+import com.yf.system.modules.plugin.service.PluginDataService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,33 +18,38 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 /**
- * 文件上传业务类
- * @author bool
- * @date 2019-07-30 21:02
+ * 本地上传插件
+ * @author van
  */
 @Log4j2
 @Service
-public class LocalUpServiceImpl implements LocalUpService {
+public class LocalUpServiceImpl implements UploadService {
 
+
+    /**
+     * 插件唯一标识
+     */
+    private static final String PLUGIN_CODE = "upload-local";
 
     @Autowired
-    private CfgUploadService cfgUploadService;
+    private PluginDataService pluginDataService;
 
 
     @Override
-    public UploadRespDTO upload(UploadReqDTO reqDTO) {
+    public UploadRespDTO upload(MultipartFile file) {
 
         // 查找上传配置
         LocalConfig conf = this.getConfig();
-
-        // 文件内容
-        MultipartFile file = reqDTO.getFile();
 
         // 上传文件夹
         String fileDir = conf.getLocalDir();
@@ -63,12 +65,12 @@ public class LocalUpServiceImpl implements LocalUpService {
             // 创建文件夹
             OssUtils.checkDir(fullPath);
             // 上传文件
-            FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(fullPath));
+            FileCopyUtils.copy(file.getInputStream(), Files.newOutputStream(Paths.get(fullPath)));
 
             return this.generateResult(conf, filePath);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e);
             throw new ServiceException("文件上传失败："+e.getMessage());
         }
     }
@@ -96,12 +98,12 @@ public class LocalUpServiceImpl implements LocalUpService {
             // 创建文件夹
             OssUtils.checkDir(fullPath);
             // 上传文件
-            FileCopyUtils.copy(is, new FileOutputStream(fullPath));
+            FileCopyUtils.copy(is, Files.newOutputStream(Paths.get(fullPath)));
 
-            return conf.getUrl() + Constant.FILE_PREFIX + filePath;
+            return conf.getVisitUrl() + Constant.FILE_PREFIX + filePath;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e);
             throw new ServiceException("文件上传失败："+e.getMessage());
         }
     }
@@ -140,7 +142,7 @@ public class LocalUpServiceImpl implements LocalUpService {
                 os.write(buffer, 0, len);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            log.error(e);
         } finally {
             if(is!=null){
                 is.close();
@@ -155,11 +157,9 @@ public class LocalUpServiceImpl implements LocalUpService {
      * 获取配置文件
      * @return
      */
-    @Override
-    public LocalConfig getConfig(){
-        CfgUploadDTO dto = cfgUploadService.detail(UploadProvider.LOCAL);
-        LocalConfig cfg = JsonHelper.parseObject(dto.getData(), LocalConfig.class);
-        return cfg;
+    private LocalConfig getConfig(){
+        String str = pluginDataService.findConfig(PLUGIN_CODE);
+        return JsonHelper.parseObject(str, LocalConfig.class);
     }
 
 
@@ -171,7 +171,7 @@ public class LocalUpServiceImpl implements LocalUpService {
     private UploadRespDTO generateResult(LocalConfig conf, String fileName) {
 
         //获取加速域名
-        String domain = conf.getUrl();
+        String domain = conf.getVisitUrl();
 
         // 返回结果
         return new UploadRespDTO(domain + Constant.FILE_PREFIX + fileName);
