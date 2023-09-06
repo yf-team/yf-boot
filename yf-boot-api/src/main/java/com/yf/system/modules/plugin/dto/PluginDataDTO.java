@@ -1,12 +1,15 @@
 package com.yf.system.modules.plugin.dto;
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.yf.base.api.annon.Dict;
+import com.yf.base.utils.jackson.DesensitizeSerializer;
 import com.yf.base.utils.jackson.RawJsonDeserializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -18,6 +21,8 @@ import java.io.Serializable;
 * @author 聪明笨狗
 * @since 2022-09-05 10:05
 */
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @ApiModel(value="插件信息", description="插件信息")
 public class PluginDataDTO implements Serializable {
@@ -41,7 +46,7 @@ public class PluginDataDTO implements Serializable {
     @ApiModelProperty(value = "分组ID", required=true)
     private String groupId;
 
-    @JsonRawValue
+    @JsonSerialize(using = DesensitizeSerializer.class)
     @JsonDeserialize(using = RawJsonDeserializer.class)
     @ApiModelProperty(value = "配置数据")
     private String configData;

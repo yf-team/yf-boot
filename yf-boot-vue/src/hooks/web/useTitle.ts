@@ -4,10 +4,11 @@ import { useAppStoreWithOut } from '@/store/modules/app'
 import { useI18n } from '@/hooks/web/useI18n'
 
 const appStore = useAppStoreWithOut()
-const siteInfo = appStore.siteInfo
 
 export const useTitle = (newTitle?: string) => {
   const { t } = useI18n()
+  // 网站信息
+  const siteInfo = appStore.getSiteInfo
   const title = ref(
     newTitle ? `${siteInfo.siteName} - ${t(newTitle as string)}` : siteInfo.siteName
   )

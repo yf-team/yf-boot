@@ -75,6 +75,10 @@ declare global {
     permissions?: string[]
   }
 
+  declare interface SitePropTypes {
+    userReg?: boolean
+  }
+
   declare interface SiteInfoTypes {
     id?: string
     siteName?: string
@@ -82,5 +86,6 @@ declare global {
     loginBg?: string
     backLogo?: string
     copyRight?: string
+    props?: SitePropTypes
   }
 }

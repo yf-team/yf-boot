@@ -40,6 +40,7 @@ public class PluginDataServiceImpl extends ServiceImpl<PluginDataMapper, PluginD
         //获得数据
         IPage<PluginData> page = this.page(reqDTO.toPage(), wrapper);
         //转换结果
+        System.out.println("++++++service转换了。。。");
         IPage<PluginDataDTO> pageData = JsonHelper.parseObject(page, new TypeReference<Page<PluginDataDTO>>(){});
         return pageData;
     }

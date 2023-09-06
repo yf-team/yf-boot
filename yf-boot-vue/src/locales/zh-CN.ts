@@ -110,7 +110,7 @@ export default {
     password: '密码',
     register: '注册',
     checkPassword: '确认密码',
-    login: '登录',
+    login: '用户登录',
     otherLogin: '其它登录方式',
     remember: '记住我',
     hasUser: '已有账号？去登录',

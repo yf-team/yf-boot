@@ -36,8 +36,6 @@ public class DesensitizeSerializer extends JsonSerializer<String> {
             return;
         }
 
-        System.out.println("+++++待转换的JSON数据："+json);
-
         // 进行数据转换
         try {
             map = JsonHelper.parseObject(json, new TypeReference<Map<String, Object>>() {});
@@ -106,7 +104,9 @@ public class DesensitizeSerializer extends JsonSerializer<String> {
 
     public static void main(String[] args) {
 
-        String json = "{\"localDir\":\"/Users/van/work/yf-boot/\", \"visitUrl\": \"http://localhost:8080\"}";
+        String json = "\"{\\\"localDir\\\":\\\"/Users/van/work/yf-boot/\\\",\\\"visitUrl\\\":\\\"http://localhost:8080\\\"}\"";
+
+        json = json.replace("\\\"", "\"").replace("\"{", "{").replace("}\"", "}");
        Map<String,Object> map = JsonHelper.parseObject(json, new TypeReference<Map<String, Object>>() {});
        System.out.println(map.toString());
     }

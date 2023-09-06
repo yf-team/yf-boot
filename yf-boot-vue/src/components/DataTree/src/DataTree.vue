@@ -116,7 +116,7 @@ import { onMounted, PropType, ref } from 'vue'
 import { ElMessageBox, ElMessage, ElTree } from 'element-plus'
 import { Icon } from '@/components/Icon'
 import type Node from 'element-plus/es/components/tree/src/model/node'
-import type { DropType } from 'element-plus/es/components/tree/src/tree.type'
+import type { AllowDropType } from 'element-plus/es/components/tree/src/tree.type'
 import type { TreeColumnType } from './types'
 import request from '@/config/axios'
 
@@ -238,7 +238,7 @@ const batchEdit = () => {
 }
 
 // 执行排序
-const handleDrag = (draggingNode: Node, dropNode: Node, dropType: DropType) => {
+const handleDrag = (draggingNode: Node, dropNode: Node, dropType: AllowDropType) => {
   const params = { form: draggingNode.data.id, to: dropNode.data.id, dropType: dropType }
 
   request.post({ url: props.sortUrl, data: params }).then(() => {

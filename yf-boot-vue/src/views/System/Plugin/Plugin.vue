@@ -38,7 +38,7 @@
       </template>
     </data-table>
 
-    <el-dialog v-model="dialogVisible" title="配置插件" width="40%" :before-close="handleClose">
+    <ElDialog v-model="dialogVisible" title="配置插件" width="40%" :before-close="handleClose">
       <el-form :model="form" ref="formRef" label-width="150px">
         <template v-for="item in configItems" :key="item.name">
           <el-form-item :label="item.title" :prop="item.name">
@@ -53,7 +53,7 @@
           <el-button type="primary" @click="handleSave(formRef)">保存</el-button>
         </span>
       </template>
-    </el-dialog>
+    </ElDialog>
   </ContentWrap>
 </template>
 

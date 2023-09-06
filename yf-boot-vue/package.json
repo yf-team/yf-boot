@@ -39,7 +39,7 @@
     "driver.js": "^1.2.1",
     "echarts": "^5.4.3",
     "echarts-wordcloud": "^2.1.0",
-    "element-plus": "^2.3.9",
+    "element-plus": "^2.3.12",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.1",
     "mockjs": "^1.1.0",
@@ -115,10 +115,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kailong321200875/vue-element-plus-admin.git"
+    "url": "git+https://github.com/yf-team/yf-boot.git"
   },
   "bugs": {
-    "url": "https://github.com/kailong321200875/vue-element-plus-admin/issues"
+    "url": "https://github.com/yf-team/yf-boot/issues"
   },
-  "homepage": "https://github.com/kailong321200875/vue-element-plus-admin"
+  "homepage": "https://github.com/yf-team/yf-boot"
 }

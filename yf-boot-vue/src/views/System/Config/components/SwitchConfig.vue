@@ -1,84 +1,68 @@
 <template>
-  <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
-    <el-form-item label="系统名称" prop="siteName">
-      <el-input v-model="form.siteName" autocomplete="off" />
+  <el-form :model="form" :rules="rules" ref="formRef" label-width="120px" label-position="left">
+    <el-form-item label="新用户注册">
+      <el-switch
+        v-model="form.userReg"
+        active-color="#13ce66"
+        active-text="开启"
+        inactive-text="关闭"
+      />
     </el-form-item>
 
-    <el-form-item label="登录页图标" prop="loginLogo">
-      <el-input v-model="form.loginLogo" autocomplete="off" />
+    <el-form-item label="允许多处登录">
+      <el-radio v-model="form.loginTick" :label="0">允许多处登录</el-radio>
+      <el-radio v-model="form.loginTick" :label="1">将前面的账号踢下线</el-radio>
     </el-form-item>
 
-    <el-form-item label="登录页背景" prop="loginBg">
-      <el-input v-model="form.loginBg" autocomplete="off" />
-    </el-form-item>
-
-    <el-form-item label="后台图标" prop="backLogo">
-      <el-input v-model="form.backLogo" autocomplete="off" />
-    </el-form-item>
-
-    <el-form-item label="版权信息" prop="copyRight">
-      <el-input v-model="form.copyRight" autocomplete="off" />
-    </el-form-item>
-
-    <el-form-item label="用户头像" prop="avatar">
-      <el-input v-model="form.avatar" autocomplete="off" />
+    <el-form-item>
+      <el-button type="primary" @click="onSubmit(formRef)">保存</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, unref } from 'vue'
+import { ref, reactive, unref, onMounted } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { saveApi, detailApi } from '@/api/sys/user'
+import { apiDetail, apiSave } from '@/api/sys/config/switch'
 
-const form = ref({})
+const form = ref({ userReg: false, loginTick: 0 })
 const formRef = ref<FormInstance>()
 const rules = reactive<FormRules>({
-  roleName: [
+  siteName: [
     {
       required: true,
-      message: '角色名称必须输入',
-      trigger: 'blur'
-    }
-  ],
-  dataScope: [
-    {
-      required: true,
-      message: '数据权限必须选择',
-      trigger: 'blur'
-    }
-  ],
-  roleLevel: [
-    {
-      required: true,
-      message: '角色级别不能为空',
+      message: '系统名称不能为空！',
       trigger: 'blur'
     }
   ]
 })
 
-const handleEdit = (row: any) => {
-  detailApi({ id: row.id }).then((res) => {
-    // 数据
-    console.log('data', res.data)
+const fetchDetail = () => {
+  apiDetail().then((res) => {
+    form.value = res.data
   })
 }
 
-const handleSave = (formEl: FormInstance | undefined) => {
+const onSubmit = (formEl: FormInstance | undefined) => {
   if (!formEl) return
 
   formEl.validate((valid) => {
     if (valid) {
       const formData = unref(form)
-      saveApi(formData).then(() => {
+      apiSave(formData).then(() => {
         ElMessage({
           showClose: true,
-          message: '操作成功！',
+          message: '保存成功！',
           type: 'success'
         })
       })
     }
   })
 }
+
+// 加载数据
+onMounted(() => {
+  fetchDetail()
+})
 </script>

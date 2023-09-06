@@ -54,8 +54,7 @@ export enum ComponentNameEnum {
   INPUT_PASSWORD = 'InputPassword',
   EDITOR = 'Editor',
   TREE_SELECT = 'TreeSelect',
-  UPLOAD = 'Upload',
-  JSON_EDITOR = 'JsonEditor'
+  UPLOAD = 'Upload'
 }
 
 type CamelCaseComponentName = keyof typeof ComponentNameEnum extends infer K

@@ -16,8 +16,8 @@
       <file-uploader v-model="form.backLogo" />
     </el-form-item>
 
-    <el-form-item label="版权信息" prop="copyRight">
-      <el-input v-model="form.copyRight" autocomplete="off" />
+    <el-form-item label="底部信息" prop="copyRight">
+      <Editor v-model="form.copyRight" height="200px" ref="editorRef" />
     </el-form-item>
 
     <el-form-item>
@@ -32,6 +32,10 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { saveApi, detailApi } from '@/api/sys/config'
 import FileUploader from '@/plugins/uploader/src/FileUploader.vue'
+import Editor from '@/components/Editor/src/Editor.vue'
+import { useAppStoreWithOut } from '@/store/modules/app'
+import { detailApi as fetchSteInfo } from '@/api/sys/config'
+const appStore = useAppStoreWithOut()
 
 const form = ref({ loginLogo: '', siteName: '', loginBg: '', backLogo: '', copyRight: '' })
 const formRef = ref<FormInstance>()
@@ -53,6 +57,15 @@ const fetchConfig = () => {
   })
 }
 
+const refreshSite = async () => {
+  // 获取网站基本信息
+  if (!appStore.getSiteInfo || !appStore.getSiteInfo.id) {
+    await fetchSteInfo({}).then((res) => {
+      appStore.setSiteInfo(res.data)
+    })
+  }
+}
+
 const onSubmit = (formEl: FormInstance | undefined) => {
   if (!formEl) return
 
@@ -65,6 +78,7 @@ const onSubmit = (formEl: FormInstance | undefined) => {
           message: '操作成功！',
           type: 'success'
         })
+        refreshSite()
       })
     }
   })

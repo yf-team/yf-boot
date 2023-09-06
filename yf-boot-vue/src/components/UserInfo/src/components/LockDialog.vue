@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from '@/hooks/web/useI18n'
 import { ref } from 'vue'
-import { Dialog } from '@/components/Dialog'
 import { Form } from '@/components/Form'
 import { useForm } from '@/hooks/web/useForm'
 import { reactive, computed } from 'vue'
@@ -78,7 +77,7 @@ const userInfo = computed(() => appStore.getUserInfo)
 </script>
 
 <template>
-  <Dialog
+  <el-dialog
     v-model="dialogVisible"
     width="500px"
     max-height="170px"
@@ -95,7 +94,7 @@ const userInfo = computed(() => appStore.getUserInfo)
     <template #footer>
       <ElButton type="primary" @click="handleLock">{{ t('lock.lock') }}</ElButton>
     </template>
-  </Dialog>
+  </el-dialog>
 </template>
 
 <style lang="less" scoped>

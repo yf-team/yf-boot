@@ -15,12 +15,20 @@ import java.io.IOException;
  */
 public class RawJsonDeserializer extends JsonDeserializer<String> {
 
+    private static final String TYPE_STRING = "STRING";
+
     @Override
     public String deserialize(JsonParser jp, DeserializationContext ctxt)
             throws IOException, JsonProcessingException {
 
         ObjectMapper mapper = (ObjectMapper) jp.getCodec();
         JsonNode node = mapper.readTree(jp);
+
+        // 如果本身就是String类型，直接返回
+        if(TYPE_STRING.equals(node.getNodeType().name())){
+            return node.textValue();
+        }
+
         return mapper.writeValueAsString(node);
     }
 }

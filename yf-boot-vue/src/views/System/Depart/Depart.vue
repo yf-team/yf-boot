@@ -1,5 +1,5 @@
 <template>
-  <ContentWrap>
+  <ContentWrap v-loading="loading" element-loading-text="加载中...">
     <DataTree
       ref="dataTree"
       :columns="columns"
@@ -34,14 +34,16 @@
 </template>
 
 <script lang="ts" setup>
+import { ContentWrap } from '@/components/ContentWrap'
 import { ref, reactive } from 'vue'
-import DataTree from '@/components/DataTree/src/DataTree.vue'
 import { TreeColumnType } from '@/components/DataTree/src/types'
-import { saveApi } from '@/api/sys/depart/index'
+import { saveApi } from '@/api/sys/depart'
+import DataTree from '@/components/DataTree/src/DataTree.vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import type { DropType } from 'element-plus/es/components/tree/src/tree.type'
+import type { AllowDropType } from 'element-plus/es/components/tree/src/tree.type'
 
 const dataTree = ref()
+const loading = ref(false)
 
 let columns = ref<TreeColumnType[]>([
   {
@@ -112,17 +114,13 @@ const handleClose = () => {
 }
 
 // 拖拽规则
-const allowDrop = (draggingNode: Node, dropNode: Node, type: DropType) => {
+const allowDrop = (draggingNode: Node, dropNode: Node, type: AllowDropType) => {
   // 不允许跨部门拖动
   if (draggingNode.data.parentId !== dropNode.data.parentId) {
     return false
   }
 
   // 不允许跨级
-  if (type === 'inner') {
-    return false
-  }
-
-  return true
+  return type !== 'inner'
 }
 </script>

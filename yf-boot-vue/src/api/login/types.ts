@@ -1,8 +1,8 @@
 export type UserLoginType = {
-  captchaKey: string
-  captchaValue: string
-  password: string
-  username: string
+  captchaKey?: string
+  captchaValue?: string
+  password?: string
+  username?: string
 }
 
 export type UserType = {
