@@ -65,10 +65,28 @@
         </filter>
     </appender>
 
+    <!--所有日志输出-->
+    <appender name="FILE-TOTAL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/total.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/%d{yyyy-MM}/total.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
     <root>
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE-INFO"/>
         <appender-ref ref="FILE-DEBUG"/>
         <appender-ref ref="FILE-ERROR"/>
+        <appender-ref ref="FILE-TOTAL"/>
     </root>
 </configuration>

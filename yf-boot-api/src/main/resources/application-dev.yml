@@ -65,6 +65,5 @@ swagger:
 # 日志配置
 logging:
   level:
-    root: debug
-  file:
-    path: logs/${spring.application.name}/
+    root: info
+  path: logs/${spring.application.name}/
