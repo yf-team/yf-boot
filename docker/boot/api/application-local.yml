@@ -1,0 +1,100 @@
+# 独立外挂配置文件
+server:
+  port: 8080
+  # 启用服务端压缩
+  compression:
+    enabled: true
+    min-response-size: 10
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+
+spring:
+  application:
+    name: yf-boot-api
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+    deserialization:
+      fail_on_unknown_properties: false
+    parser:
+      # 允许出现特殊字符和转义符
+      allow_unquoted_control_chars: true
+      #允许出现单引号
+      allow_single_quotes: true
+    serialization:
+      fail-on-empty-beans: false
+    mapper:
+      # 支持类型转换
+      allow-coercion-of-scalars: true
+  # 数据库配置
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/yf_boot?useSSL=false&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: root
+    password: VZYANau5l6UOK78o
+    # druid相关配置
+    druid:
+      max-active: 5000
+      initial-size: 20
+      min-idle: 5
+      async-init: true
+      # 监控统计
+      filters: stat,wall
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 5000
+        wall:
+          config:
+            create-table-allow: false
+            alter-table-allow: false
+            drop-table-allow: false
+            truncate-allow: false
+
+  # Redis配置
+  redis:
+    database: 0
+    host: redis
+    port: 6379
+    password:
+    timeout: 5000
+
+  # 定时任务配置
+  quartz:
+    #数据库方式
+    job-store-type: jdbc
+    # quartz 相关属性配置
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: examScheduler
+            instanceId: AUTO
+          jobStore:
+            class: org.springframework.scheduling.quartz.LocalDataSourceJobStore
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            clusterCheckinInterval: 10000
+            useProperties: false
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+
+
+# 开启文档
+swagger:
+  enable: true
+
+# 日志配置
+logging:
+  level:
+    root: debug
+  path: logs/${spring.application.name}/

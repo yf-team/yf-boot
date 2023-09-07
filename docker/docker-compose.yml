@@ -1,0 +1,67 @@
+version: '3'
+services: 
+    api:
+        build: 
+            context: ./boot
+            dockerfile: Dockerfile
+        image: boot_api
+        container_name: boot_api
+        volumes:
+            - './boot/api:/data/run/api'
+        # 映射到外部，格式：对外:内部
+        # ports:
+        #     - '8101:8101'
+        links:
+            - mysql
+            - redis
+        depends_on:
+            - mysql
+            - redis
+        
+    mysql:
+        environment:
+            - MYSQL_ROOT_PASSWORD=VZYANau5l6UOK78o
+        # 5.7使用：mysql/mysql-server:5.7
+        # 8.0使用：mysql/mysql-server:8.0.27
+        image: mysql/mysql-server:8.0.27
+        container_name: boot_mysql
+        restart: always
+        # 解决因加密问题无法访问
+        command: --default-authentication-plugin=mysql_native_password
+        volumes:
+            - './mysql/db:/var/lib/mysql'
+            - './mysql/conf/my.cnf:/etc/my.cnf'
+            - './mysql/init:/docker-entrypoint-initdb.d/'
+        # 映射到外部，格式：对外:内部
+        # ports:
+        #    - '3368:3306'
+    redis:
+        restart: always
+        image: redis
+        container_name: boot_redis
+        command: redis-server --appendonly yes
+        volumes:
+            - './redis/db:/data/redis'
+        # 映射到外部，格式：对外:内部
+        # ports:
+        #   - '6679:6379'
+    nginx:
+        restart: always
+        image: nginx:1.20.2
+        container_name: boot_nginx
+        volumes:
+            - './nginx/conf.d:/etc/nginx/conf.d'
+            # SSL证书文件
+            - './nginx/cert:/etc/nginx/cert'
+            # 前端文件
+            - './boot/dist:/data/run/dist'
+
+        # 开放http和https端口
+        ports:
+            - '80:80'
+            - '443:443'
+            - '8686:8686'
+        links:
+            - api
+        depends_on:
+            - api
