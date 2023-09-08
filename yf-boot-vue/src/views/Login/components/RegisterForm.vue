@@ -50,12 +50,7 @@
     </el-form-item>
 
     <el-form-item :label="t('login.code')" prop="captchaValue">
-      <input-captcha
-        v-model="form.captchaValue"
-        :captcha-key="form.captchaKey"
-        style="width: 100%"
-        :placeholder="t('login.codePlaceholder')"
-      />
+      <input-captcha v-model="form" style="width: 100%" :placeholder="t('login.codePlaceholder')" />
     </el-form-item>
 
     <el-form-item>
@@ -89,7 +84,13 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 const userStore = useUserStoreWithOut()
 
 const { t } = useI18n()
-const form = ref<UserLoginType>({})
+const form = ref<UserLoginType>({
+  username: '',
+  realName: '',
+  password: '',
+  captchaKey: '',
+  captchaValue: ''
+})
 const formRef = ref<FormInstance>()
 
 // 密码校验
