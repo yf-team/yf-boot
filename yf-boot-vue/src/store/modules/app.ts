@@ -4,7 +4,7 @@ import { setCssVar, humpToUnderline } from '@/utils'
 import { ElMessage, ComponentSize } from 'element-plus'
 import { useStorage } from '@/hooks/web/useStorage'
 
-const { getStorage, setStorage, removeStorage } = useStorage()
+const { getStorage, setStorage } = useStorage()
 
 interface AppState {
   breadcrumb: boolean
@@ -32,13 +32,11 @@ interface AppState {
   theme: ThemeTypes
   fixedMenu: boolean
   siteInfo: SiteInfoTypes
-  userInfo: UserInfoTypes
 }
 
 export const useAppStore = defineStore('app', {
   state: (): AppState => {
     return {
-      userInfo: getStorage('userInfo'), // 登录信息存储字段-建议每个项目换一个字段，避免与其它项目冲突
       sizeMap: ['default', 'large', 'small'],
       mobile: false, // 是否是移动端
       pageLoading: false, // 路由跳转loading
@@ -154,10 +152,6 @@ export const useAppStore = defineStore('app', {
     getLayout(): LayoutType {
       return this.layout
     },
-
-    getUserInfo(): UserInfoTypes {
-      return this.userInfo
-    },
     getIsDark(): boolean {
       return this.isDark
     },
@@ -239,16 +233,6 @@ export const useAppStore = defineStore('app', {
       }
       this.layout = layout
       setStorage('layout', this.layout)
-    },
-    // 缓存用户信息
-    setUserInfo(data?: UserInfoTypes) {
-      if (data && data.token) {
-        this.userInfo = data
-        setStorage('userInfo', this.userInfo)
-      } else {
-        this.userInfo = {}
-        removeStorage('userInfo')
-      }
     },
     // 设置网站信息
     setSiteInfo(data?: SiteInfoTypes) {

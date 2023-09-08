@@ -63,10 +63,12 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void saveRoles(String userId, List<String> ids) {
+    public void saveRoles(String userId, List<String> ids, boolean check) {
 
 
-        this.checkRoles(ids);
+        if(check) {
+            this.checkRoles(ids);
+        }
 
         // 删除全部角色
         QueryWrapper<SysUserRole> wrapper = new QueryWrapper<>();

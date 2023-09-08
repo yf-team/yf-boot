@@ -9,8 +9,8 @@ import { FormSchema } from '@/components/Form'
 import { ElButton } from 'element-plus'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useLockStore } from '@/store/modules/lock'
-import { useAppStore } from '@/store/modules/app'
-const appStore = useAppStore()
+import { useUserStore } from '@/store/modules/user'
+const userStore = useUserStore()
 
 const { getPrefixCls } = useDesign()
 const prefixCls = getPrefixCls('lock-dialog')
@@ -73,7 +73,7 @@ const handleLock = async () => {
   })
 }
 
-const userInfo = computed(() => appStore.getUserInfo)
+const userInfo = computed(() => userStore.getUserInfo)
 </script>
 
 <template>

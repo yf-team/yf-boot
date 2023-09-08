@@ -47,8 +47,7 @@ import type {
 } from 'element-plus'
 
 const uploadRef = ref<UploadInstance>()
-
-import { useAppStoreWithOut } from '@/store/modules/app'
+import { useUserStoreWithOut } from '@/store/modules/user'
 
 // 已上传列表
 const fileList = ref<UploadUserFile[]>([])
@@ -58,7 +57,7 @@ const dialogVisible = ref(false)
 const disabled = ref(false)
 const action = import.meta.env.VITE_API_HOST + '/api/common/file/upload'
 
-const userInfo = useAppStoreWithOut().getUserInfo
+const userInfo = useUserStoreWithOut().getUserInfo
 const headers = { token: userInfo.token }
 
 // 事件定义

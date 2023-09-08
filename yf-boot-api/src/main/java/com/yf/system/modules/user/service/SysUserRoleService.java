@@ -39,9 +39,10 @@ public interface SysUserRoleService extends IService<SysUserRole> {
      * 保存全部角色
      * @param userId
      * @param ids
+     * @param check
      * @return
      */
-    void saveRoles(String userId, List<String> ids);
+    void saveRoles(String userId, List<String> ids, boolean check);
 
 
     /**

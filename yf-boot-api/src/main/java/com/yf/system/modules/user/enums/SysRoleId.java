@@ -11,12 +11,12 @@ public interface SysRoleId {
     /**
      * 超级管理员
      */
-    String SA = "sa";
+    String ADMIN = "admin";
 
     /**
-     * 学员
+     * 普通用户
      */
-    String STUDENT = "student";
+    String USER = "user";
 
 
 }

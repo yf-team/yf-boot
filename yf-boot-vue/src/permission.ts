@@ -7,10 +7,12 @@ import { useNProgress } from '@/hooks/web/useNProgress'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { usePageLoading } from '@/hooks/web/usePageLoading'
 import { detailApi as fetchSteInfo } from '@/api/sys/config'
+import { useUserStore } from '@/store/modules/user'
 
 const permissionStore = usePermissionStoreWithOut()
 
 const appStore = useAppStoreWithOut()
+const userStore = useUserStore()
 
 const { getStorage } = useStorage()
 
@@ -31,7 +33,7 @@ router.beforeEach(async (to, from, next) => {
     })
   }
 
-  if (appStore.getUserInfo && appStore.getUserInfo.token) {
+  if (userStore.getUserInfo && userStore.getUserInfo.token) {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
@@ -42,7 +44,7 @@ router.beforeEach(async (to, from, next) => {
 
       // 构建路由
       const roleRouters = getStorage('roleRouters') || []
-      await permissionStore.generateRoutes('server', roleRouters as AppCustomRouteRecordRaw[])
+      await permissionStore.generateRoutes(roleRouters as AppCustomRouteRecordRaw[])
 
       permissionStore.getAddRouters.forEach((route) => {
         router.addRoute(route as unknown as RouteRecordRaw) // 动态添加可访问路由表

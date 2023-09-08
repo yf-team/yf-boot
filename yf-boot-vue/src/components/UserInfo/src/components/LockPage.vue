@@ -11,8 +11,8 @@ import { useDesign } from '@/hooks/web/useDesign'
 import { Icon } from '@/components/Icon'
 import { loginOutApi } from '@/api/login'
 import { useTagsViewStore } from '@/store/modules/tagsView'
-import { useAppStore } from '@/store/modules/app'
-const appStore = useAppStore()
+import { useUserStore } from '@/store/modules/user'
+const userStore = useUserStore()
 
 const tagsViewStore = useTagsViewStore()
 
@@ -65,7 +65,7 @@ function handleShowForm(show = false) {
   showDate.value = show
 }
 
-const userInfo = computed(() => appStore.getUserInfo)
+const userInfo = computed(() => userStore.getUserInfo)
 </script>
 
 <template>

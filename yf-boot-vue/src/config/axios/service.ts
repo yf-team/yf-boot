@@ -7,8 +7,9 @@ import { ElMessage } from 'element-plus'
 import { useStorage } from '@/hooks/web/useStorage'
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import router, { resetRouter } from '@/router'
+import { useUserStoreWithOut } from '@/store/modules/user'
 const { clear } = useStorage()
-const appStore = useAppStoreWithOut()
+const userStore = useUserStoreWithOut()
 const tagsViewStore = useTagsViewStore()
 
 export const PATH_URL = import.meta.env.VITE_API_HOST || ''
@@ -23,7 +24,8 @@ const axiosInstance: AxiosInstance = axios.create({
 axiosInstance.interceptors.request.use((res: InternalAxiosRequestConfig) => {
   const controller = new AbortController()
   const url = res.url || ''
-  const userInfo = appStore.getUserInfo
+  const userInfo = userStore.getUserInfo
+  console.log('++++userinfo', userInfo)
   // 传入token
   if (userInfo && userInfo.token && res && res.headers) {
     res.headers['token'] = userInfo.token
@@ -42,7 +44,7 @@ axiosInstance.interceptors.response.use(
     if (res.data.code === code_overdue) {
       ElMessage.error(res.data.msg)
       // 置空残留会话
-      appStore.setUserInfo({})
+      userStore.setUserInfo({})
       // 清除缓存数据等
       clear()
       // 重置静态路由表

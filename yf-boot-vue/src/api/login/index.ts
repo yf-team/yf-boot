@@ -1,8 +1,16 @@
 import request from '@/config/axios'
 
-export const loginApi = (data) => {
+export const apiLogin = (data) => {
   return request.post({
     url: '/api/sys/user/login',
+    data
+  })
+}
+
+// 用户注册
+export const apiRegister = (data) => {
+  return request.post({
+    url: '/api/sys/user/reg',
     data
   })
 }

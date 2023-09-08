@@ -1,165 +1,144 @@
-<script setup lang="tsx">
-import { Form, FormSchema } from '@/components/Form'
-import { reactive, ref } from 'vue'
-import { useI18n } from '@/hooks/web/useI18n'
-import { useForm } from '@/hooks/web/useForm'
-import { ElButton, ElInput, FormRules } from 'element-plus'
-import { useValidator } from '@/hooks/web/useValidator'
+<template>
+  <el-form
+    ref="formRef"
+    :model="form"
+    :rules="rules"
+    label-position="left"
+    label-width="70px"
+    size="large"
+    class="dark:(border-1 border-[var(--el-border-color)] border-solid); w-[100%]"
+    hide-required-asterisk
+  >
+    <el-form-item>
+      <h2 class="text-2xl font-bold text-center w-[100%]">{{ t('login.registerTitle') }}</h2>
+    </el-form-item>
 
+    <el-form-item :label="t('login.username')" prop="username">
+      <el-input
+        v-model="form.username"
+        :placeholder="t('login.usernamePlaceholder')"
+        clearable
+        type="text"
+      />
+    </el-form-item>
+
+    <el-form-item :label="t('login.realName')" prop="realName">
+      <el-input
+        v-model="form.realName"
+        :placeholder="t('login.realNamePlaceholder')"
+        clearable
+        type="text"
+      />
+    </el-form-item>
+
+    <el-form-item :label="t('login.password')" prop="password">
+      <input-password
+        v-model="form.password"
+        :strength="true"
+        style="width: 100%"
+        :placeholder="t('login.passwordPlaceholder')"
+      />
+    </el-form-item>
+
+    <el-form-item :label="t('login.checkPassword')" prop="checkPassword">
+      <input-password
+        v-model="form.checkPassword"
+        :strength="true"
+        style="width: 100%"
+        :placeholder="t('login.passwordPlaceholder')"
+      />
+    </el-form-item>
+
+    <el-form-item :label="t('login.code')" prop="captchaValue">
+      <input-captcha v-model="form" style="width: 100%" :placeholder="t('login.codePlaceholder')" />
+    </el-form-item>
+
+    <el-form-item>
+      <div class="w-[100%]">
+        <el-button :loading="loading" type="primary" class="w-[100%]" @click="register(formRef)">
+          {{ t('login.register') }}
+        </el-button>
+      </div>
+      <div class="w-[100%] mt-15px">
+        <el-button class="w-[100%]" @click="toLogin"> {{ t('login.hasUser') }} </el-button>
+      </div>
+    </el-form-item>
+  </el-form>
+</template>
+
+<script setup lang="ts">
+import { ref, unref } from 'vue'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useValidator } from '@/hooks/web/useValidator'
+import { UserLoginType } from '@/api/login/types'
+import { FormInstance } from 'element-plus'
+import InputPassword from '@/components/InputPassword/src/InputPassword.vue'
+import InputCaptcha from '@/components/InputCaptcha/src/InputCaptcha.vue'
+const { required } = useValidator()
+import { useRouter } from 'vue-router'
+const { replace } = useRouter()
 const emit = defineEmits(['to-login'])
 
-const { formRegister, formMethods } = useForm()
-const { getElFormExpose } = formMethods
+import { useUserStoreWithOut } from '@/store/modules/user'
+
+const userStore = useUserStoreWithOut()
 
 const { t } = useI18n()
+const form = ref<UserLoginType>({})
+const formRef = ref<FormInstance>()
 
-const { required } = useValidator()
-
-const schema = reactive<FormSchema[]>([
-  {
-    field: 'title',
-    colProps: {
-      span: 24
-    },
-    formItemProps: {
-      slots: {
-        default: () => {
-          return <h2 class="text-2xl font-bold text-center w-[100%]">{t('login.register')}</h2>
-        }
-      }
-    }
-  },
-  {
-    field: 'username',
-    label: t('login.username'),
-    value: '',
-    component: 'Input',
-    colProps: {
-      span: 24
-    },
-    componentProps: {
-      placeholder: t('login.usernamePlaceholder')
-    }
-  },
-  {
-    field: 'password',
-    label: t('login.password'),
-    value: '',
-    component: 'InputPassword',
-    colProps: {
-      span: 24
-    },
-    componentProps: {
-      style: {
-        width: '100%'
-      },
-      strength: true,
-      placeholder: t('login.passwordPlaceholder')
-    }
-  },
-  {
-    field: 'check_password',
-    label: t('login.checkPassword'),
-    value: '',
-    component: 'InputPassword',
-    colProps: {
-      span: 24
-    },
-    componentProps: {
-      style: {
-        width: '100%'
-      },
-      strength: true,
-      placeholder: t('login.passwordPlaceholder')
-    }
-  },
-  {
-    field: 'code',
-    label: t('login.code'),
-    colProps: {
-      span: 24
-    },
-    formItemProps: {
-      slots: {
-        default: (formData) => {
-          return (
-            <div class="w-[100%] flex">
-              <ElInput v-model={formData.code} placeholder={t('login.codePlaceholder')} />
-            </div>
-          )
-        }
-      }
-    }
-  },
-  {
-    field: 'register',
-    colProps: {
-      span: 24
-    },
-    formItemProps: {
-      slots: {
-        default: () => {
-          return (
-            <>
-              <div class="w-[100%]">
-                <ElButton
-                  type="primary"
-                  class="w-[100%]"
-                  loading={loading.value}
-                  onClick={loginRegister}
-                >
-                  {t('login.register')}
-                </ElButton>
-              </div>
-              <div class="w-[100%] mt-15px">
-                <ElButton class="w-[100%]" onClick={toLogin}>
-                  {t('login.hasUser')}
-                </ElButton>
-              </div>
-            </>
-          )
-        }
-      }
-    }
+// 密码校验
+const checkPass = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请输入确认密码！'))
+  } else if (value !== form.value.password) {
+    callback(new Error('两次密码输入不一致！'))
+  } else {
+    callback()
   }
-])
+}
 
-const rules: FormRules = {
+const rules = {
   username: [required()],
+  realName: [required()],
   password: [required()],
-  check_password: [required()],
-  code: [required()]
+  checkPassword: [{ validator: checkPass, trigger: 'blur' }],
+  captchaValue: [required()]
 }
-
-const toLogin = () => {
-  emit('to-login')
-}
-
 const loading = ref(false)
 
-const loginRegister = async () => {
-  const formRef = await getElFormExpose()
-  formRef?.validate(async (valid) => {
-    if (valid) {
-      try {
-        loading.value = true
-        toLogin()
-      } finally {
-        loading.value = false
-      }
+// 登录
+const register = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  await formEl?.validate(async (isValid) => {
+    if (isValid) {
+      loading.value = true
+      const formData = unref(form)
+      // 注册并登录
+      userStore
+        .register(formData)
+        .then(() => {
+          replace('/home/dashboard')
+          loading.value = false
+        })
+        .catch(() => {
+          loading.value = false
+        })
     }
   })
 }
+
+// 去登录页面
+const toLogin = () => {
+  emit('to-login')
+}
 </script>
 
-<template>
-  <Form
-    :schema="schema"
-    :rules="rules"
-    label-position="top"
-    hide-required-asterisk
-    size="large"
-    class="dark:(border-1 border-[var(--el-border-color)] border-solid)"
-    @register="formRegister"
-  />
-</template>
+<style lang="less" scoped>
+:deep(.el-form-item__label) {
+  display: inline-block;
+  width: 70px;
+  margin-right: 10px;
+  text-align-last: justify;
+}
+</style>

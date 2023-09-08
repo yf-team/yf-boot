@@ -337,7 +337,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         // 保存角色信息
-        sysUserRoleService.saveRoles(user.getId(), roles);
+        sysUserRoleService.saveRoles(user.getId(), roles, true);
 
         // 保存绑定关系
         this.saveOrUpdate(user);
@@ -442,13 +442,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (!StringUtils.isBlank(role)) {
             roleList.add(role);
         } else {
-            // 默认学员
-            roleList.add(SysRoleId.STUDENT);
+            // 默认用户
+            roleList.add(SysRoleId.USER);
         }
 
 
         // 保存角色
-        sysUserRoleService.saveRoles(user.getId(), roleList);
+        sysUserRoleService.saveRoles(user.getId(), roleList, false);
 
         // 保存用户
         this.save(user);

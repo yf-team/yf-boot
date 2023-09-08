@@ -9,7 +9,7 @@
     hide-required-asterisk
   >
     <el-form-item>
-      <h2 class="text-2xl font-bold text-center w-[100%]">{{ t('login.login') }}</h2>
+      <h2 class="text-2xl font-bold text-center w-[100%]">{{ t('login.loginTitle') }}</h2>
     </el-form-item>
 
     <el-form-item :label="t('login.username')" prop="username">
@@ -31,6 +31,10 @@
       />
     </el-form-item>
 
+    <el-form-item :label="t('login.code')" prop="captchaValue">
+      <input-captcha v-model="form" style="width: 100%" :placeholder="t('login.codePlaceholder')" />
+    </el-form-item>
+
     <el-form-item>
       <div class="flex justify-between items-center w-[100%]">
         <el-checkbox v-model="remember" :label="t('login.remember')" size="small" />
@@ -49,7 +53,7 @@
       </div>
     </el-form-item>
 
-    <el-form-item>
+    <el-form-item style="display: none">
       <el-divider content-position="center">其它登录方式</el-divider>
 
       <div class="flex justify-between w-[100%]">
@@ -87,35 +91,40 @@
 </template>
 
 <script setup lang="tsx">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, unref, watch } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import { loginApi, routesApi } from '@/api/login'
-import { useStorage } from '@/hooks/web/useStorage'
 import { useAppStore } from '@/store/modules/app'
-import { usePermissionStore } from '@/store/modules/permission'
+import { useUserStore } from '@/store/modules/user'
 import { useRouter } from 'vue-router'
-import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
+import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
 import { UserLoginType } from '@/api/login/types'
 import { FormInstance } from 'element-plus'
+import InputCaptcha from '@/components/InputCaptcha/src/InputCaptcha.vue'
+
 const { required } = useValidator()
 const emit = defineEmits(['to-register'])
 
 const appStore = useAppStore()
-const permissionStore = usePermissionStore()
-const { currentRoute, addRoute, replace } = useRouter()
-const { setStorage } = useStorage()
+const userStore = useUserStore()
+const { currentRoute, replace } = useRouter()
 const { t } = useI18n()
 
 const siteInfo = computed(() => appStore.getSiteInfo)
 
-const form = ref<UserLoginType>({})
+const form = ref<UserLoginType>({
+  username: '',
+  password: '',
+  captchaKey: '',
+  captchaValue: ''
+})
 const formRef = ref<FormInstance>()
 
 const rules = {
   username: [required()],
-  password: [required()]
+  password: [required()],
+  captchaValue: [required()]
 }
 const iconSize = 30
 const remember = ref(false)
@@ -137,42 +146,23 @@ watch(
 // 登录
 const signIn = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl?.validate(async (isValid) => {
+  await formEl?.validate((isValid) => {
     if (isValid) {
       loading.value = true
-      const formData = form.value
+      const formData = unref(form)
 
-      try {
-        const res = await loginApi(formData)
-        if (res) {
-          appStore.setUserInfo(res.data)
-          await getRole()
-        }
-      } finally {
-        loading.value = false
-      }
+      userStore
+        .login(formData)
+        .then(() => {
+          loading.value = false
+          // 跳转到记录页面或首页
+          replace(redirect.value || '/home/dashboard')
+        })
+        .catch(() => {
+          loading.value = false
+        })
     }
   })
-}
-
-// 获取角色及菜单
-const getRole = async () => {
-  const res = await routesApi({})
-  if (res) {
-    const routers = res.data || []
-    setStorage('roleRouters', routers)
-
-    // 固定使用服务端方式
-    await permissionStore.generateRoutes('server', routers).catch(() => {})
-
-    permissionStore.getAddRouters.forEach((route) => {
-      // 动态添加可访问路由表
-      addRoute(route as RouteRecordRaw)
-    })
-    permissionStore.setIsAddRouters(true)
-    // 跳转到记录页面或首页
-    await replace(redirect.value || '/home/dashboard')
-  }
 }
 
 // 去注册页面

@@ -11,8 +11,8 @@ import LockDialog from './components/LockDialog.vue'
 import { ref, computed } from 'vue'
 import LockPage from './components/LockPage.vue'
 import { useLockStore } from '@/store/modules/lock'
-import { useAppStore } from '@/store/modules/app'
-const appStore = useAppStore()
+import { useUserStore } from '@/store/modules/user'
+const userStore = useUserStore()
 
 const lockStore = useLockStore()
 
@@ -44,7 +44,7 @@ const loginOut = () => {
         // 重置静态路由表
         resetRouter()
         // 清理数据
-        appStore.setUserInfo({})
+        userStore.setUserInfo({})
         await replace('/login')
       }
     })
@@ -58,7 +58,7 @@ const lockScreen = () => {
   dialogVisible.value = true
 }
 
-const userInfo = computed(() => appStore.getUserInfo)
+const userInfo = computed(() => userStore.getUserInfo)
 </script>
 
 <template>

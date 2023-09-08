@@ -5,9 +5,8 @@ import { defineStore } from 'pinia'
 import { store } from '../index'
 import { findIndex } from '@/utils'
 import { useStorage } from '@/hooks/web/useStorage'
-import { useAppStoreWithOut } from './app'
-
-const appStore = useAppStoreWithOut()
+import { useUserStoreWithOut } from '@/store/modules/user'
+const userStore = useUserStoreWithOut()
 
 const { getStorage } = useStorage()
 
@@ -96,7 +95,7 @@ export const useTagsViewStore = defineStore('tagsView', {
     // 删除所有tag
     delAllVisitedViews() {
       // const affixTags = this.visitedViews.filter((tag) => tag.meta.affix)
-      this.visitedViews = getStorage(appStore.getUserInfo)
+      this.visitedViews = getStorage(userStore.getUserInfo.id || '')
         ? this.visitedViews.filter((tag) => tag?.meta?.affix)
         : []
     },
