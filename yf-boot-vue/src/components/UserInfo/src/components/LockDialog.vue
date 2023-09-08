@@ -1,17 +1,41 @@
+<template>
+  <el-dialog
+    v-model="dialogVisible"
+    width="500px"
+    max-height="170px"
+    :class="prefixCls"
+    :title="dialogTitle"
+  >
+    <div class="flex flex-col items-center">
+      <img :src="userInfo.avatar" alt="" class="w-70px h-70px rounded-[50%]" />
+      <span class="text-14px my-10px text-[var(--top-header-text-color)]">{{
+        userInfo.realName || userInfo.userName
+      }}</span>
+    </div>
+
+    <el-form ref="formRef" :model="form" :rules="rules" label-position="left">
+      <el-form-item :label="t('lock.lockPassword')" prop="password">
+        <el-input v-model="form.password" type="password" :show-password="true" />
+      </el-form-item>
+      <el-form-item>
+        <el-button style="width: 100%" type="primary" @click="handleLock(formRef)">{{
+          t('lock.lock')
+        }}</el-button>
+      </el-form-item>
+    </el-form>
+  </el-dialog>
+</template>
+
 <script setup lang="ts">
 import { useI18n } from '@/hooks/web/useI18n'
-import { ref } from 'vue'
-import { Form } from '@/components/Form'
-import { useForm } from '@/hooks/web/useForm'
+import { ref, unref } from 'vue'
 import { reactive, computed } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
-import { FormSchema } from '@/components/Form'
-import { ElButton } from 'element-plus'
+import { FormInstance } from 'element-plus'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useLockStore } from '@/store/modules/lock'
 import { useUserStore } from '@/store/modules/user'
 const userStore = useUserStore()
-
 const { getPrefixCls } = useDesign()
 const prefixCls = getPrefixCls('lock-dialog')
 
@@ -43,28 +67,18 @@ const rules = reactive({
   password: [required()]
 })
 
-const schema: FormSchema[] = reactive([
-  {
-    label: t('lock.lockPassword'),
-    field: 'password',
-    component: 'Input',
-    componentProps: {
-      type: 'password',
-      showPassword: true
-    }
-  }
-])
+const form = ref({
+  password: ''
+})
+const formRef = ref<FormInstance>()
 
-const { formRegister, formMethods } = useForm()
+const handleLock = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
 
-const { getFormData, getElFormExpose } = formMethods
-
-const handleLock = async () => {
-  const formExpose = await getElFormExpose()
-  formExpose?.validate(async (valid) => {
-    if (valid) {
+  await formEl?.validate((isValid) => {
+    if (isValid) {
       dialogVisible.value = false
-      const formData = await getFormData()
+      const formData = unref(form)
       lockStore.setLockInfo({
         isLock: true,
         ...formData
@@ -75,27 +89,6 @@ const handleLock = async () => {
 
 const userInfo = computed(() => userStore.getUserInfo)
 </script>
-
-<template>
-  <el-dialog
-    v-model="dialogVisible"
-    width="500px"
-    max-height="170px"
-    :class="prefixCls"
-    :title="dialogTitle"
-  >
-    <div class="flex flex-col items-center">
-      <img :src="userInfo.avatar" alt="" class="w-70px h-70px rounded-[50%]" />
-      <span class="text-14px my-10px text-[var(--top-header-text-color)]">{{
-        userInfo.realName || userInfo.userName
-      }}</span>
-    </div>
-    <Form :is-col="false" :schema="schema" :rules="rules" @register="formRegister" />
-    <template #footer>
-      <ElButton type="primary" @click="handleLock">{{ t('lock.lock') }}</ElButton>
-    </template>
-  </el-dialog>
-</template>
 
 <style lang="less" scoped>
 :global(.v-lock-dialog) {

@@ -1,6 +1,6 @@
 <template>
   <div :class="[prefixCls, `${prefixCls}--${configGlobal?.size}`]">
-    <el-input v-bind="$attrs" v-model="valueRef.captchaValue" type="text" />
+    <el-input v-bind="$attrs" v-model="valueRef" type="text" />
     <el-image :src="imageUrl" @click="changeCode" />
   </div>
 </template>
@@ -19,28 +19,30 @@ const prefixCls = getPrefixCls('input-captcha')
 const imageUrl = ref<String>('')
 
 const props = defineProps({
-  modelValue: propTypes.object.def({})
+  captchaKey: propTypes.string.def(''),
+  modelValue: propTypes.string.def('')
 })
 
 const { configGlobal } = useConfigGlobal()
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'update:captchaKey'])
 
 // 输入框的值
 const valueRef = ref(props.modelValue)
+const keyRef = ref(props.captchaKey)
 
 const changeCode = () => {
-  valueRef.value.captchaKey = uuidv4()
-  valueRef.value.captchaValue = ''
-  imageUrl.value = `${import.meta.env.VITE_API_HOST}/api/common/captcha/gen?key=${
-    valueRef.value.captchaKey
-  }`
+  keyRef.value = uuidv4()
+  valueRef.value = ''
+  imageUrl.value = `${import.meta.env.VITE_API_HOST}/api/common/captcha/gen?key=${keyRef.value}`
+  emit('update:captchaKey', keyRef)
 }
 
 // 监听
 watch(
   () => valueRef,
   (val: object) => {
+    console.log('xxx', val)
     emit('update:modelValue', val)
   },
   {

@@ -32,7 +32,12 @@
     </el-form-item>
 
     <el-form-item :label="t('login.code')" prop="captchaValue">
-      <input-captcha v-model="form" style="width: 100%" :placeholder="t('login.codePlaceholder')" />
+      <input-captcha
+        v-model="form.captchaValue"
+        :captcha-key="form.captchaKey"
+        style="width: 100%"
+        :placeholder="t('login.codePlaceholder')"
+      />
     </el-form-item>
 
     <el-form-item>
