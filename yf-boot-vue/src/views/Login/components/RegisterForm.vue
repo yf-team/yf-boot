@@ -13,9 +13,9 @@
       <h2 class="text-2xl font-bold text-center w-[100%]">{{ t('login.registerTitle') }}</h2>
     </el-form-item>
 
-    <el-form-item :label="t('login.username')" prop="username">
+    <el-form-item :label="t('login.username')" prop="userName">
       <el-input
-        v-model="form.username"
+        v-model="form.userName"
         :placeholder="t('login.usernamePlaceholder')"
         clearable
         type="text"
@@ -85,7 +85,7 @@ const userStore = useUserStoreWithOut()
 
 const { t } = useI18n()
 const form = ref<UserLoginType>({
-  username: '',
+  userName: '',
   realName: '',
   password: '',
   captchaKey: '',
@@ -105,7 +105,7 @@ const checkPass = (rule: any, value: any, callback: any) => {
 }
 
 const rules = {
-  username: [required()],
+  userName: [required()],
   realName: [required()],
   password: [required()],
   checkPassword: [{ validator: checkPass, trigger: 'blur' }],
@@ -124,7 +124,7 @@ const register = async (formEl: FormInstance | undefined) => {
       userStore
         .register(formData)
         .then(() => {
-          replace('/home/dashboard')
+          replace('/admin/dashboard')
           loading.value = false
         })
         .catch(() => {

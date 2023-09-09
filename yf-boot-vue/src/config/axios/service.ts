@@ -2,7 +2,6 @@ import axios from 'axios'
 import config from './config'
 
 import { AxiosInstance, InternalAxiosRequestConfig, RequestConfig, AxiosResponse } from './types'
-import { useAppStoreWithOut } from '@/store/modules/app'
 import { ElMessage } from 'element-plus'
 import { useStorage } from '@/hooks/web/useStorage'
 import { useTagsViewStore } from '@/store/modules/tagsView'
@@ -25,7 +24,6 @@ axiosInstance.interceptors.request.use((res: InternalAxiosRequestConfig) => {
   const controller = new AbortController()
   const url = res.url || ''
   const userInfo = userStore.getUserInfo
-  console.log('++++userinfo', userInfo)
   // 传入token
   if (userInfo && userInfo.token && res && res.headers) {
     res.headers['token'] = userInfo.token
@@ -37,6 +35,8 @@ axiosInstance.interceptors.request.use((res: InternalAxiosRequestConfig) => {
 
 axiosInstance.interceptors.response.use(
   (res: AxiosResponse) => {
+    console.log('响应结果', res)
+
     if (res.data.code === code_success) {
       return res.data
     }
@@ -61,7 +61,9 @@ axiosInstance.interceptors.response.use(
     abortControllerMap.delete(url)
     return res.data
   },
-  (err: any) => err
+  (err: any) => {
+    ElMessage.error('糟糕，服务器开小差了！' + err)
+  }
 )
 
 const service = {

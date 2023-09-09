@@ -32,5 +32,5 @@ export type OptionsType = {
   add?: ButtonType
   edit?: ButtonType
   del?: ButtonType
-  batchs?: BatchType[]
+  batch?: BatchType[]
 }

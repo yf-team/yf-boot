@@ -2,7 +2,7 @@ export type UserLoginType = {
   captchaKey?: string
   captchaValue?: string
   password?: string
-  username?: string
+  userName?: string
   checkPassword?: string
   realName?: string
 }

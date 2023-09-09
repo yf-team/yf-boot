@@ -12,9 +12,9 @@
       <h2 class="text-2xl font-bold text-center w-[100%]">{{ t('login.loginTitle') }} </h2>
     </el-form-item>
 
-    <el-form-item :label="t('login.username')" prop="username">
+    <el-form-item :label="t('login.username')" prop="userName">
       <el-input
-        v-model="form.username"
+        v-model="form.userName"
         :placeholder="t('login.usernamePlaceholder')"
         clearable
         type="text"
@@ -49,7 +49,7 @@
         </el-button>
       </div>
       <div class="w-[100%] mt-15px" v-if="siteInfo?.props?.userReg">
-        <el-button class="w-[100%]" @click="toRegister"> {{ t('login.register') }} </el-button>
+        <el-button class="w-[100%]" @click="toRegister"> {{ t('login.noUser') }} </el-button>
       </div>
     </el-form-item>
 
@@ -114,7 +114,7 @@ const { t } = useI18n()
 const siteInfo = computed(() => appStore.getSiteInfo)
 
 const form = ref<UserLoginType>({
-  username: '',
+  userName: '',
   password: '',
   captchaKey: '',
   captchaValue: ''
@@ -156,7 +156,7 @@ const signIn = async (formEl: FormInstance | undefined) => {
         .then(() => {
           loading.value = false
           // 跳转到记录页面或首页
-          replace(redirect.value || '/home/dashboard')
+          replace(redirect.value || '/admin/dashboard')
         })
         .catch(() => {
           loading.value = false

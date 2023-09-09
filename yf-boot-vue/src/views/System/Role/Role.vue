@@ -5,11 +5,12 @@
       :query="query"
       @on-add="handleAdd(formRef)"
       @on-edit="handleEdit"
-      ref="table"
+      ref="tableRef"
     >
       <template #search>
         <el-input
           class="filter-item"
+          clearable
           v-model="query.params['roleName']"
           placeholder="搜索角色名称"
         />
@@ -97,11 +98,11 @@ let options = ref<OptionsType>({
   },
   del: {
     enable: true,
-    permission: ['']
+    permission: ['role:delete']
   },
 
   // 批量操作
-  batchs: [
+  batch: [
     {
       key: 'state',
       label: '启用',
@@ -117,7 +118,7 @@ let options = ref<OptionsType>({
   ]
 })
 
-const table = ref()
+const tableRef = ref()
 
 const dialogVisible = ref(false)
 const form = ref<RoleDataType>({})
@@ -174,7 +175,7 @@ const handleSave = (formEl: FormInstance | undefined) => {
           type: 'success'
         })
         // 刷新表格
-        table.value.reload()
+        tableRef.value.reload()
         dialogVisible.value = false
       })
     } else {

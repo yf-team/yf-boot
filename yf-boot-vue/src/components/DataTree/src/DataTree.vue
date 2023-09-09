@@ -80,7 +80,6 @@
             <el-button
               v-if="props.add"
               :disabled="!data.id"
-              type="default"
               size="small"
               circle
               icon="Plus"
@@ -89,7 +88,6 @@
             <el-button
               v-if="props.edit"
               :disabled="!data.id"
-              type="default"
               size="small"
               icon="Edit"
               circle

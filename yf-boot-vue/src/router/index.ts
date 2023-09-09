@@ -8,26 +8,6 @@ const { t } = useI18n()
 
 export const constantRouterMap: AppRouteRecordRaw[] = [
   {
-    path: '/',
-    component: Layout,
-    redirect: '/home/dashboard',
-    name: 'Home',
-    children: [
-      {
-        path: '/home/dashboard',
-        name: 'Dashboard',
-        component: () => import('@/views/Dashboard/Dashboard.vue'),
-        meta: {
-          title: '首页'
-        }
-      }
-    ],
-    meta: {
-      hidden: true
-    }
-  },
-
-  {
     path: '/redirect',
     component: Layout,
     name: 'Redirect',
@@ -66,8 +46,6 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
   }
 ]
 
-export const asyncRouterMap: AppRouteRecordRaw[] = []
-
 const router = createRouter({
   history: createWebHashHistory(),
   strict: true,
@@ -77,7 +55,7 @@ const router = createRouter({
 
 export const resetRouter = (): void => {
   // Home和Dashboard后续放到后端路由
-  const resetWhiteNameList = ['Home', 'Dashboard', 'Redirect', 'Login', 'NoFind', 'Root']
+  const resetWhiteNameList = ['Redirect', 'Login', 'NoFind', 'Root']
   router.getRoutes().forEach((route) => {
     const { name } = route
     if (name && !resetWhiteNameList.includes(name as string)) {

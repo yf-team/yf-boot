@@ -2,7 +2,7 @@
   <ContentWrap v-loading="loading" element-loading-text="加载中...">
     <div class="search-box">
       <div class="search-items">
-        <el-input class="filter-item" v-model="filterText" placeholder="搜索角色名称" />
+        <el-input class="filter-item" v-model="filterText" placeholder="搜索菜单名称" />
       </div>
 
       <el-button type="primary" icon="Search" @click="search()">搜索</el-button>
@@ -267,8 +267,12 @@ const handleAddRoot = (formEl: FormInstance | undefined) => {
   menuType.value = 1
   //清空表单
   formEl?.resetFields()
-  form.value.menuType = 1
-  form.value.parentId = '0'
+
+  // 清空值
+  form.value = {
+    menuType: 1,
+    parentId: '0'
+  }
   dialogVisible.value = true
 }
 
@@ -278,6 +282,7 @@ const handleAdd = (row: any, formEl: FormInstance | undefined) => {
 
   //清空表单
   formEl?.resetFields()
+  form.value = {}
 
   if (menuType.value === 1) {
     form.value.menuType = 1

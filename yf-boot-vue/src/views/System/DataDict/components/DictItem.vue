@@ -5,11 +5,11 @@
       :query="query"
       @on-add="handleAdd(formRef)"
       @on-edit="handleEdit"
-      ref="table"
+      ref="tableRef"
     >
       <template #search>
-        <DictListSelect v-model="query.params['type']" dic-code="dic_type" class="filter-item" />
-        <el-input v-model="query.params['title']" placeholder="搜名称或编码" class="filter-item" />
+        <DictListSelect v-model="query.params.type" dic-code="dic_type" class="filter-item" />
+        <el-input v-model="query.params.title" placeholder="搜名称或编码" class="filter-item" />
       </template>
 
       <template #columns>
@@ -146,9 +146,10 @@ let options = ref<OptionsType>({
   }
 })
 
-const table = ref()
+const tableRef = ref()
 
 const handleAdd = (formEl: FormInstance | undefined) => {
+  form.value = {}
   dialogVisible.value = true
   formEl?.resetFields()
 }
@@ -175,9 +176,11 @@ const handleSave = (formEl: FormInstance | undefined) => {
           message: '操作成功！',
           type: 'success'
         })
-        // 刷新表格
-        table.value.reload()
+
+        console.log('关闭?')
         dialogVisible.value = false
+        // 刷新表格
+        tableRef.value.reload()
       })
     } else {
       dialogVisible.value = false

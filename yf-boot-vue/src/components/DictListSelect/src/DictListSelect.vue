@@ -3,12 +3,13 @@
     filterable
     remote
     clearable
+    remote-show-suffix
     v-model="value"
     :remote-method="handlerSearch"
     @change="handleChange"
     @clear="handleClear"
     :loading="loading"
-    style="width: 100%"
+    class="filter-item"
   >
     <el-option v-for="item in listData" :key="item.value" :label="item.title" :value="item.value" />
   </el-select>
@@ -22,10 +23,6 @@ import type { DictValueType } from './types'
 // 列表数据
 const listData = ref<DictValueType[]>([])
 
-// 选定值
-const value = ref('')
-const loading = ref(false)
-
 // 表格参数
 const props = defineProps({
   modelValue: {
@@ -36,6 +33,10 @@ const props = defineProps({
     default: ''
   }
 })
+
+// 选定值
+const value = ref(props.modelValue)
+const loading = ref(false)
 
 // 监听数据变化
 watch(
@@ -85,8 +86,6 @@ const loadData = (query?: String) => {
 const handlerSearch = (query: string) => {
   if (query) {
     loadData(query)
-  } else {
-    listData.value = []
   }
 }
 

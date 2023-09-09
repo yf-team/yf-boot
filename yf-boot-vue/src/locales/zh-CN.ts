@@ -116,6 +116,7 @@ export default {
     registerTitle: '注册新用户',
     otherLogin: '其它登录方式',
     remember: '记住我',
+    noUser: '没有账号？去注册',
     hasUser: '已有账号？去登录',
     forgetPassword: '忘记密码',
     usernamePlaceholder: '请输入用户名',

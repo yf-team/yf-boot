@@ -26,7 +26,7 @@
         <alicloud.version>2.1.1.RELEASE</alicloud.version>
         <poi.version>4.1.2</poi.version>
         <log4j2.version>2.16.0</log4j2.version>
-        <shiro.version>1.9.1</shiro.version>
+        <shiro.version>1.8.0</shiro.version>
     </properties>
 
 
@@ -132,12 +132,16 @@
         <!-- shiro-redis -->
         <dependency>
             <groupId>org.crazycake</groupId>
-            <artifactId>shiro-redis-spring-boot-starter</artifactId>
-            <version>3.3.1</version>
+            <artifactId>shiro-redis</artifactId>
+            <version>3.1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.shiro</groupId>
-                    <artifactId>shiro-spring-boot-web-starter</artifactId>
+                    <artifactId>shiro-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
                 </exclusion>
             </exclusions>
         </dependency>

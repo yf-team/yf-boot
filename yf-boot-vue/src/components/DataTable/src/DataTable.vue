@@ -57,7 +57,7 @@
           >导出</el-button
         >
 
-        <el-dropdown v-if="selectedIds.length > 0 && batchs" style="margin-left: 10px">
+        <el-dropdown v-if="selectedIds.length > 0 && batch" style="margin-left: 10px">
           <el-button type="primary" plain>
             批量操作<el-icon class="el-icon--right"><arrow-down /></el-icon>
           </el-button>
@@ -65,7 +65,7 @@
             <el-dropdown-menu>
               <el-dropdown-item
                 :key="index"
-                v-for="(item, index) in batchs"
+                v-for="(item, index) in batch"
                 @click="onBatch(item)"
                 >{{ item.label }}</el-dropdown-item
               >
@@ -138,7 +138,7 @@ const props = defineProps({
 const emit = defineEmits(['onAdd', 'onEdit', 'onDelete', 'onBatch'])
 
 // 解构参数便于处理
-const { listUrl, delUrl, rowKey, add, edit, del, ip, op, batchs } = toRefs(props.options)
+const { listUrl, delUrl, rowKey, add, edit, del, ip, op, batch } = toRefs(props.options)
 const { query } = toRefs(props)
 
 // 搜索数据
@@ -309,7 +309,7 @@ onMounted(() => {
 
 // 对外开放数据
 defineExpose({
-  reload: search()
+  reload
 })
 </script>
 

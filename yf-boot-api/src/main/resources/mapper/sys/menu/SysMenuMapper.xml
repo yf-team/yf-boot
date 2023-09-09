@@ -82,6 +82,7 @@
         LEFT JOIN el_sys_menu mu ON rm.menu_id=mu.id
         WHERE mu.menu_type!=3 AND rm.role_id IN
         <foreach item="role" collection="roleIds" separator="," open="(" close=")">'${role}'</foreach>
+        ORDER BY mu.`sort` ASC
     </select>
 
     <select id="listPermissionByRoles" resultType="String">

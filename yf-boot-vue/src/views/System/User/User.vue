@@ -123,7 +123,7 @@ let options = ref<OptionsType>({
     permission: ['sys:user:delete']
   },
   // 批量操作
-  batchs: [
+  batch: [
     {
       key: 'state',
       label: '启用',

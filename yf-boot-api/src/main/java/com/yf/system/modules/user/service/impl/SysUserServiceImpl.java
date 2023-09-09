@@ -134,7 +134,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         QueryWrapper<SysUser> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(SysUser::getUserName, reqDTO.getUsername());
+        wrapper.lambda().eq(SysUser::getUserName, reqDTO.getUserName());
         SysUser user = this.getOne(wrapper, false);
 
         // 校验用户状态&密码

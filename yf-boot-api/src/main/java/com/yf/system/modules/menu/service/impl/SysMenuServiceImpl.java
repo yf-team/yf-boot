@@ -115,7 +115,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<RouteRespDTO> routes = baseMapper.listMenuByRoles(roleList);
 
         // 构建
-        Map<String, List<RouteRespDTO>> childMap = new HashMap<>();
+        Map<String, List<RouteRespDTO>> childMap = new HashMap<>(16);
         for (RouteRespDTO item : routes) {
             String parentId = item.getParentId();
             List<RouteRespDTO> list = null;

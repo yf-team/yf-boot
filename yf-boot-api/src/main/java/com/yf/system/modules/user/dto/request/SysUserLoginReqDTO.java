@@ -21,7 +21,7 @@ public class SysUserLoginReqDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "用户名", required=true)
-    private String username;
+    private String userName;
 
     @ApiModelProperty(value = "密码", required=true)
     private String password;
