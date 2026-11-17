@@ -43,8 +43,26 @@ public class PagingReqDTO<T> {
         Page page = new Page();
         page.setCurrent(this.current);
         page.setSize(this.size);
-        page.setOrders(orders);
+        page.setOrders(this.safeOrders(this.orders));
         return page;
+    }
+
+    /**
+     * 校验排序字段，防止ORDER BY注入
+     * @param items 排序项
+     * @return 校验后的排序项
+     */
+    private List<OrderItem> safeOrders(List<OrderItem> items){
+        if(items == null || items.isEmpty()){
+            return items;
+        }
+        for(OrderItem item : items){
+            String column = item.getColumn();
+            if(column == null || !column.matches("[A-Za-z0-9_]+")){
+                throw new IllegalArgumentException("非法的排序字段");
+            }
+        }
+        return items;
     }
 
 
